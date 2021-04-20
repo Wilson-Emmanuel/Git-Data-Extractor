@@ -2,6 +2,8 @@ package com.wilcotech.dataextractor.core.core.domain.entities;
 
 import com.wilcotech.dataextractor.core.core.domain.enums.RecordStatusConstant;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -11,7 +13,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
 
-@Data
+@Setter
+@Getter
 @ToString
 @EnableJpaAuditing
 @MappedSuperclass
