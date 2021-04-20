@@ -17,10 +17,9 @@ import java.util.Optional;
  */
 @Repository
 public interface FileRepository extends JpaRepository<FileEntity,Long> {
-    Optional<FileEntity> findByNameUrl(String nameUrl);
+    Optional<FileEntity> findByNameUrlAndProject_LocalPath(String nameUrl,String localPath);
 
-    List<FileEntity> findAllByProject(ProjectEntity project);
     Page<FileEntity> findAllByProject(ProjectEntity project, Pageable pageable);
     List<FileEntity> findAllByCreator(DeveloperEntity creator);
-    boolean existsByName_url(String nameUrl);
+    boolean existsByNameUrlAndProject_LocalPath(String nameUrl, String localPath);
 }

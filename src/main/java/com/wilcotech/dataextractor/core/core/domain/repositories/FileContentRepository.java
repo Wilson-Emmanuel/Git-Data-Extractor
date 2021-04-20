@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -16,9 +17,7 @@ import java.util.Set;
  */
 @Repository
 public interface FileContentRepository extends JpaRepository<FileContentEntity, Long> {
-
-    //Optional<FileContentEntity> findByLibrary(String library);
     Set<FileContentEntity> findAllByFile(FileEntity file);
-
+    Optional<FileContentEntity> findAllByFileAndLibrary(FileEntity file, String library);
     Page<FileContentEntity> findAllByFile_Project(ProjectEntity project,Pageable pageable);
 }

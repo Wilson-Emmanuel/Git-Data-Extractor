@@ -22,12 +22,12 @@ public interface CommitRepository extends JpaRepository<CommitEntity,Long> {
     Optional<CommitEntity> findByCommitId(String commitId);
     boolean existsByCommitId(String commitId);
 
-    List<CommitEntity> findAllByProject(ProjectEntity project);
-    Page<CommitEntity> findAllByProject(ProjectEntity project, Pageable pageable);
+    List<CommitEntity> findAllByDeveloper_Project(ProjectEntity project);
+    Page<CommitEntity> findAllByDeveloper_Project(ProjectEntity project, Pageable pageable);
 
     List<CommitEntity> findAllByDeveloper(DeveloperEntity developer);
     Page<CommitEntity> findAllByDeveloper(DeveloperEntity developer,Pageable pageable);
 
-    List<CommitEntity> findAllByCommitDateIsGreaterThanEqual(Instant commitDate);
-    Page<CommitEntity> findAllByCommitDateIsGreaterThanEqual(Instant commitDate,Pageable pageable);
+    List<CommitEntity> findAllByProjectAndCommitDateIsGreaterThanEqual(ProjectEntity project, Instant commitDate);
+    Page<CommitEntity> findAllByProjectAndCommitDateIsGreaterThanEqual(ProjectEntity project, Instant commitDate,Pageable pageable);
 }
