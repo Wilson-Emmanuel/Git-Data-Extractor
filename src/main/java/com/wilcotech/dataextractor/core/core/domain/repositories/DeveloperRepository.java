@@ -15,7 +15,8 @@ import java.util.Optional;
  */
 @Repository
 public interface DeveloperRepository extends JpaRepository<DeveloperEntity,Long> {
-    Optional<DeveloperEntity> findByName(String name);
+    //Optional<DeveloperEntity> findByNameAndEmailAndProject(String name, String email, ProjectEntity projectEntity);
+    Optional<DeveloperEntity> findByNameAndEmailAndProject_LocalPath(String name, String email, String localPath);
     Page<DeveloperEntity> findAllByProject(ProjectEntity project, Pageable pageable);
-    boolean existsByName(String name);
+    boolean existsByNameAndEmailAndProject_LocalPath(String name, String email, String projectPath);
 }
