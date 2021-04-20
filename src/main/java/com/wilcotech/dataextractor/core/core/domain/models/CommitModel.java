@@ -11,7 +11,6 @@ import lombok.Data;
 @Builder
 public class CommitModel {
     private Long id;
-    private String projectName;
     private String commitId;
     private DeveloperModel developer;
     private String commitDate;

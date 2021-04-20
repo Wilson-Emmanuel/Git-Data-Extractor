@@ -15,4 +15,30 @@ public class PagedData <T> {
         this.totalItems = totalItems;
         this.totalPages = totalPages;
     }
+ public boolean isEmpty(){
+        return items == null || items.isEmpty();
+ }
+    public List<T> getItems() {
+        return items;
+    }
+
+    public void setItems(List<T> items) {
+        this.items = items;
+    }
+
+    public long getTotalItems() {
+        return totalItems;
+    }
+
+    public void setTotalItems(long totalItems) {
+        this.totalItems = totalItems;
+    }
+
+    public int getTotalPages() {
+        return totalPages;
+    }
+
+    public void setTotalPages(int totalPages) {
+        this.totalPages = totalPages;
+    }
 }

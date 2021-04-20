@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,6 +13,7 @@ import java.util.Set;
 @Data
 @Builder
 public class FileModel {
+    private Long id;
     private String nameUrl;
     private DeveloperModel creator;
     private String addedDate;
