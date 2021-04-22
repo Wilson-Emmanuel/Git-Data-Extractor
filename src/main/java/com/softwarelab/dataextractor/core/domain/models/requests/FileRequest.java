@@ -3,6 +3,9 @@ package com.softwarelab.dataextractor.core.domain.models.requests;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Wilson
  * on Mon, 19/04/2021.
@@ -12,7 +15,6 @@ import lombok.Data;
 public class FileRequest {
     private String projectPath;
     private String nameUrl;
-    private String creatorName;
-    private String creatorEmail;
-    private String addedDate;
+    @Builder.Default
+    private List<String> libraries = new ArrayList<>();
 }

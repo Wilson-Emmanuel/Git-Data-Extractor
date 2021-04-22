@@ -1,8 +1,6 @@
 package com.softwarelab.dataextractor.core.domain.repositories;
 
 import com.softwarelab.dataextractor.core.domain.entities.*;
-import com.wilcotech.dataextractor.core.core.domain.entities.*;
-import com.wilcotech.dataextractor.core.domain.entities.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

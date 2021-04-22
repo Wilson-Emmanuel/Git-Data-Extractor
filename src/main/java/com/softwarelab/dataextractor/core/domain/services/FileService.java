@@ -1,17 +1,12 @@
 package com.softwarelab.dataextractor.core.domain.services;
 
-import com.softwarelab.dataextractor.core.domain.entities.DeveloperEntity;
+import com.softwarelab.dataextractor.core.domain.entities.*;
 import com.softwarelab.dataextractor.core.domain.models.DeveloperModel;
+import com.softwarelab.dataextractor.core.domain.models.FileCountModel;
 import com.softwarelab.dataextractor.core.domain.models.FileModel;
-import com.softwarelab.dataextractor.core.domain.entities.FileContentEntity;
-import com.softwarelab.dataextractor.core.domain.entities.FileEntity;
-import com.softwarelab.dataextractor.core.domain.entities.ProjectEntity;
 import com.softwarelab.dataextractor.core.domain.models.PagedData;
 import com.softwarelab.dataextractor.core.domain.models.requests.FileRequest;
-import com.softwarelab.dataextractor.core.domain.repositories.DeveloperRepository;
-import com.softwarelab.dataextractor.core.domain.repositories.FileContentRepository;
-import com.softwarelab.dataextractor.core.domain.repositories.FileRepository;
-import com.softwarelab.dataextractor.core.domain.repositories.ProjectRepository;
+import com.softwarelab.dataextractor.core.domain.repositories.*;
 import com.softwarelab.dataextractor.core.domain.services.usecases.FileUseCase;
 import com.softwarelab.dataextractor.core.utilities.DateTimeUtil;
 import lombok.AccessLevel;
@@ -37,6 +32,7 @@ public class FileService implements FileUseCase {
     ProjectRepository projectRepository;
     DeveloperRepository developerRepository;
     FileContentRepository fileContentRepository;
+    FilePackageRepository filePackageRepository;
 
     @Override
     public FileModel save(FileRequest fileRequest) {
@@ -44,19 +40,80 @@ public class FileService implements FileUseCase {
         if(optionalProjectEntity.isEmpty())
             return null;
 
-        Optional<DeveloperEntity> optionalDeveloperEntity = developerRepository.findByNameAndEmailAndProject_LocalPath(fileRequest.getCreatorName(),fileRequest.getCreatorEmail(),fileRequest.getProjectPath());
-        if(optionalDeveloperEntity.isEmpty())
-            return null;
-
-        FileEntity fileEntity =fileRepository.findByNameUrlAndProject_LocalPath(fileRequest.getNameUrl(),fileRequest.getProjectPath())
+        FileEntity fileEntity = fileRepository.findByNameUrlAndProject_LocalPath(fileRequest.getNameUrl(),fileRequest.getProjectPath())
                 .orElseGet(() ->fileRepository.save(FileEntity.builder()
-                                .dateAdded(DateTimeUtil.getInstantTime(fileRequest.getAddedDate()))
                                 .nameUrl(fileRequest.getNameUrl())
                                 .project(optionalProjectEntity.get())
-                                .creator(optionalDeveloperEntity.get())
                                 .build()
                 ));
-        return entityToFile(fileEntity);
+        Set<FileContentEntity> savedFileContentEntities = new HashSet<>();
+        List<FileContentEntity> unsavedFileContentEntityList = new ArrayList<>();
+        FileContentEntity fileContentEntity;
+        for(String library: fileRequest.getLibraries()){
+            //check if it's project library
+            if(filePackageRepository.existsFilePackageLike(library.substring(library.lastIndexOf(".")),fileRequest.getProjectPath())){
+                continue;
+            }
+            //check if it's already saved
+            fileContentEntity = fileContentRepository.findAllByFileAndLibrary(fileEntity,library).orElse(null);
+            if(fileContentEntity != null){
+                savedFileContentEntities.add(fileContentEntity);
+            }else{
+                unsavedFileContentEntityList.add(
+                        FileContentEntity.builder()
+                        .file(fileEntity)
+                        .library(library)
+                        .build());
+            }
+        }
+        if(!unsavedFileContentEntityList.isEmpty()){
+            savedFileContentEntities.addAll(fileContentRepository.saveAll(unsavedFileContentEntityList));
+        }
+        return createFileModel(fileEntity,savedFileContentEntities);
+    }
+
+    @Override
+    public FileCountModel saveBatch(List<FileRequest> fileRequestList) {
+        if(fileRequestList.isEmpty())
+            return new FileCountModel();
+
+        Optional<ProjectEntity> optionalProjectEntity = projectRepository.findByLocalPath(fileRequestList.get(0).getProjectPath());
+        if(optionalProjectEntity.isEmpty())
+            return new FileCountModel();
+
+        FileCountModel fileCountModel = new FileCountModel();
+        FileEntity fileEntity;
+        FileContentEntity fileContentEntity;
+        List<FileContentEntity> fileContentEntities = new ArrayList<>();
+
+        for(FileRequest fileRequest: fileRequestList){
+
+             fileEntity = fileRepository.findByNameUrlAndProject_LocalPath(fileRequest.getNameUrl(),fileRequest.getProjectPath())
+                    .orElseGet(() ->{
+                        fileCountModel.fileCount++;
+                        return fileRepository.save(FileEntity.builder()
+                                .nameUrl(fileRequest.getNameUrl())
+                                .project(optionalProjectEntity.get())
+                                .build());
+                    });
+
+            for(String library: fileRequest.getLibraries()){
+                //check if it's project library
+                if(filePackageRepository.existsFilePackageLike(library.substring(library.lastIndexOf(".")),fileRequest.getProjectPath())){
+                    continue;
+                }
+                //check if it's already saved
+                if(!fileContentRepository.existsByFileAndLibrary(fileEntity,library)) {
+                    fileContentEntity = FileContentEntity.builder()
+                            .file(fileEntity)
+                            .library(library)
+                            .build();
+                    fileContentEntities.add(fileContentEntity);
+                }
+            }
+        }
+        fileCountModel.libraryCount = fileContentRepository.saveAll(fileContentEntities).size();
+        return fileCountModel;
     }
 
     @Override
@@ -82,15 +139,7 @@ public class FileService implements FileUseCase {
                 fileEntityPage.getTotalPages());
     }
 
-    @Override
-    public List<FileModel> getAllDeveloperFiles(String name, String email, String projectPath) {
-        Optional<DeveloperEntity> optionalDeveloperEntity = developerRepository.findByNameAndEmailAndProject_LocalPath(name,email,projectPath);
-        if(optionalDeveloperEntity.isEmpty())
-            return Collections.emptyList();
 
-        return fileRepository.findAllByCreator(optionalDeveloperEntity.get())
-                .stream().map(this::entityToFile).collect(Collectors.toList());
-    }
 
     @Override
     public boolean existsByNameUrlAndProject(String nameUrl, String projectPath) {
@@ -108,15 +157,15 @@ public class FileService implements FileUseCase {
     }
 @Override
     public FileModel entityToFile(FileEntity fileEntity){
-        DeveloperModel developerModel = DeveloperModel.builder()
-                .email(fileEntity.getCreator().getEmail())
-                .name(fileEntity.getCreator().getName())
-                .build();
+       Set<FileContentEntity> fileContentEntities = fileContentRepository.findAllByFile(fileEntity);
+       return createFileModel(fileEntity,fileContentEntities);
+    }
+    private FileModel createFileModel(FileEntity fileEntity, Set<FileContentEntity> fileContentEntities){
         return FileModel.builder()
                 .id(fileEntity.getId())
                 .nameUrl(fileEntity.getNameUrl())
-                .creator(developerModel)
-                .addedDate(DateTimeUtil.getDateTime(fileEntity.getDateAdded()))
+                .libraries(fileContentEntities
+                        .stream().map(FileContentEntity::getLibrary).collect(Collectors.toSet()))
                 .build();
     }
 }

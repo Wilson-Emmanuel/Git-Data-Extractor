@@ -89,4 +89,6 @@ public class FileCommitService implements FileCommitUseCase {
         return fileCommitRepository.findAllByCommit(optionalCommitEntity.get())
                 .stream().map(FileCommitEntity::getFile).map(fileUseCase::entityToFile).collect(Collectors.toList());
     }
+
+
 }
