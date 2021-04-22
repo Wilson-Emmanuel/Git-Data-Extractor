@@ -6,6 +6,7 @@ import com.softwarelab.dataextractor.core.domain.entities.ProjectEntity;
 import com.softwarelab.dataextractor.core.domain.models.PagedData;
 import com.softwarelab.dataextractor.core.domain.models.requests.FileContentRequest;
 import com.softwarelab.dataextractor.core.domain.repositories.FileContentRepository;
+import com.softwarelab.dataextractor.core.domain.repositories.FilePackageRepository;
 import com.softwarelab.dataextractor.core.domain.repositories.FileRepository;
 import com.softwarelab.dataextractor.core.domain.repositories.ProjectRepository;
 import com.softwarelab.dataextractor.core.domain.services.usecases.FileContentUseCase;
@@ -33,6 +34,7 @@ public class FileContentService implements FileContentUseCase {
     FileContentRepository fileContentRepository;
     ProjectRepository projectRepository;
     FileRepository fileRepository;
+    FilePackageRepository filePackageRepository;
 
     @Override
     public String save(FileContentRequest fileContentRequest) {
@@ -40,6 +42,10 @@ public class FileContentService implements FileContentUseCase {
         if(optionalFileEntity.isEmpty())
             return null;
 
+        String library = fileContentRequest.getLibrary();
+        if(filePackageRepository.existsFilePackageLike(library.substring(library.lastIndexOf(".")),optionalFileEntity.get().getProject().getLocalPath())){
+            return null;
+        }
         FileContentEntity fileContentEntity = fileContentRepository.findAllByFileAndLibrary(optionalFileEntity.get(),fileContentRequest.getLibrary())
                 .orElseGet(() -> fileContentRepository.save(FileContentEntity.builder()
                         .file(optionalFileEntity.get())

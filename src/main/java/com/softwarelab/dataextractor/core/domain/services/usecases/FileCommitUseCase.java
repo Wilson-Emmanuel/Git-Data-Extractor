@@ -15,4 +15,5 @@ public interface FileCommitUseCase {
     void save(Long fileId, Long commitId);
     PagedData<CommitModel> getAllCommitsInFile(Long fileId, int page, int size);
     List<FileModel> getAllFilesInCommit(Long commitId);
+
 }

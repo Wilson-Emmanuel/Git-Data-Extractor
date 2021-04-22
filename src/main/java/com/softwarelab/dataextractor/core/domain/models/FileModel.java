@@ -15,8 +15,6 @@ import java.util.Set;
 public class FileModel {
     private Long id;
     private String nameUrl;
-    private DeveloperModel creator;
-    private String addedDate;
     @Builder.Default
     private Set<String> libraries = Collections.emptySet();
 }

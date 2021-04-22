@@ -1,6 +1,7 @@
 package com.softwarelab.dataextractor.core.domain.repositories;
 
 import com.softwarelab.dataextractor.core.domain.entities.CommitEntity;
+import com.softwarelab.dataextractor.core.domain.entities.DeveloperEntity;
 import com.softwarelab.dataextractor.core.domain.entities.FileCommitEntity;
 import com.softwarelab.dataextractor.core.domain.entities.FileEntity;
 import org.springframework.data.domain.Page;
@@ -18,5 +19,6 @@ import java.util.List;
 public interface FileCommitRepository extends JpaRepository<FileCommitEntity,Long> {
     Page<FileCommitEntity> findAllByFile(FileEntity file, Pageable pageable);
     List<FileCommitEntity> findAllByCommit(CommitEntity entity);
+    List<FileCommitEntity> findAllByCommit_Developer(DeveloperEntity developer);
     boolean existsByCommitAndFile(CommitEntity commit, FileEntity file);
 }
