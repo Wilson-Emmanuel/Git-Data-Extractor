@@ -1,6 +1,7 @@
 package com.softwarelab.dataextractor.core.processors;
 
 import com.softwarelab.dataextractor.core.domain.services.ProjectService;
+import com.softwarelab.dataextractor.core.domain.services.usecases.ProjectUseCase;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,9 +21,9 @@ import java.io.InputStreamReader;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CMDProcessor {
-    ProjectService projectService;
+    ProjectUseCase projectUseCase;
     public  BufferedReader processCMD(String command, String projectPath) throws IOException, CMDProcessException {
-        if (!projectService.existsByLocalPath(projectPath))
+        if (!projectUseCase.existsByLocalPath(projectPath))
             throw new CMDProcessException("Invalid Project Location");
 
         if (!isValidDir(projectPath))
@@ -30,7 +31,7 @@ public class CMDProcessor {
 
         return execute(command, projectPath);
     }
-    private  BufferedReader execute(String command, String directory) throws IOException {
+    public  BufferedReader execute(String command, String directory) throws IOException {
         ProcessBuilder processBuilder = new ProcessBuilder()
                 .command("cmd","/c",command)
                 .directory(new File(directory));
@@ -39,7 +40,7 @@ public class CMDProcessor {
         Process process = processBuilder.start();
         return new BufferedReader(new InputStreamReader(process.getInputStream()));
     }
-    private  boolean isValidDir(String directory){
+    public  boolean isValidDir(String directory){
         try{
             String normalDir = execute(CMD.INSIDE_WORK_DIR_CMD.getCommand(),directory).readLine();
             if(!"true".equals(normalDir))

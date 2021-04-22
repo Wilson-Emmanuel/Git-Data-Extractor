@@ -23,8 +23,6 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CommitExtractor {
-
-    ProjectService projectService;
     CommitService commitService;
     CMDProcessor cmdProcessor;
 
