@@ -53,8 +53,8 @@ public class FileCommitService implements FileCommitUseCase {
     }
 
     @Override
-    public void save(Long fileId, Long commitId) {
-        Optional<CommitEntity> optionalCommitEntity = commitRepository.findById(commitId);
+    public void save(Long fileId, String commitId) {
+        Optional<CommitEntity> optionalCommitEntity = commitRepository.findByCommitId(commitId);
         Optional<FileEntity> optionalFileEntity = fileRepository.findById(fileId);
         if(optionalCommitEntity.isEmpty() || optionalFileEntity.isEmpty())
             return;

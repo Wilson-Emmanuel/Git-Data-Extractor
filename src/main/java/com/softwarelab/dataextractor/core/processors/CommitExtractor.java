@@ -50,14 +50,14 @@ public class CommitExtractor {
             line = bufferedReader.readLine();
             if (line == null)
                 break;
-            if (line.startsWith("commit"))
-                continue;
-            commitRequests.add(extractCommit(line, projectPath));
+            if (line.startsWith("gjdea_firstinfo:")){
+                commitRequests.add(extractCommit(line, projectPath));
+            }
         }
         return commitService.batchSave(commitRequests,projectPath);
     }
 
-    private CommitRequest extractCommit(String line, String projectPath) {
+    public CommitRequest extractCommit(String line, String projectPath) {
         String[] commitInfo = line.replaceFirst("gjdea_firstinfo:", "").split("\\*\\*\\*\\*");
 
         //name,email,hash,date

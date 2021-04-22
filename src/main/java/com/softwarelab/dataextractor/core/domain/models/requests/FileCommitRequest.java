@@ -11,5 +11,5 @@ import lombok.Data;
 @Builder
 public class FileCommitRequest {
     private Long fileId;
-    private Long commitId;
+    private String commitId;
 }

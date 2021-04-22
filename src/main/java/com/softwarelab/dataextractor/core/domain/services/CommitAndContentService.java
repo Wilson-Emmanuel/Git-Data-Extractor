@@ -13,9 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,11 +32,15 @@ public class CommitAndContentService implements CommitAndContentUseCase {
 
     @Override
     public String save(CommitAndContentRequest commitAndContentRequest) {
-        Optional<CommitEntity> optionalCommitEntity = commitRepository.findById(commitAndContentRequest.getCommitId());
+        Optional<CommitEntity> optionalCommitEntity = commitRepository.findByCommitId(commitAndContentRequest.getCommitId());
         if(optionalCommitEntity.isEmpty())
             return null;
 
-        Optional<FileContentEntity> optionalFileContentEntity = fileContentRepository.findById(commitAndContentRequest.getFileContentId());
+        Optional<FileEntity> optionalFileEntity = fileRepository.findById(commitAndContentRequest.getFileId());
+        if(optionalFileEntity.isEmpty())
+            return null;
+
+        Optional<FileContentEntity> optionalFileContentEntity = fileContentRepository.findAllByFileAndLibrary(optionalFileEntity.get(),commitAndContentRequest.getLibrary());
         if(optionalFileContentEntity.isEmpty())
             return null;
 
@@ -50,6 +52,34 @@ public class CommitAndContentService implements CommitAndContentUseCase {
         return optionalFileContentEntity.get().getLibrary();
     }
 
+    @Override
+    public int saveBatchPerFile(List<CommitAndContentRequest> commitAndContentRequests) {
+        if(commitAndContentRequests.isEmpty())
+            return 0;
+
+        Optional<FileEntity> optionalFileEntity = fileRepository.findById(commitAndContentRequests.get(0).getFileId());
+        if(optionalFileEntity.isEmpty())
+            return 0;
+
+        List<CommitAndContentEntity> commitAndContentEntities = new ArrayList<>();
+        CommitAndContentEntity commitAndContentEntity;
+        for(CommitAndContentRequest commitAndContentRequest: commitAndContentRequests){
+            Optional<FileContentEntity> optionalFileContentEntity = fileContentRepository.findAllByFileAndLibrary(optionalFileEntity.get(),commitAndContentRequest.getLibrary());
+            if(optionalFileContentEntity.isEmpty())
+                continue;
+
+           Optional<CommitEntity> optionalCommitEntity = commitRepository.findByCommitId(commitAndContentRequest.getCommitId());
+           if(optionalCommitEntity.isEmpty())
+               continue;
+
+            commitAndContentEntity = CommitAndContentEntity.builder()
+                    .commit(optionalCommitEntity.get())
+                    .fileContent(optionalFileContentEntity.get())
+                    .build();
+            commitAndContentEntities.add(commitAndContentEntity);
+        }
+        return commitAndContentRepository.saveAll(commitAndContentEntities).size();
+    }
 
 
     @Override

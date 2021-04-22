@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface FileCommitUseCase {
     boolean existsByFileAndCommit(Long fileId, Long commitId);
-    void save(Long fileId, Long commitId);
+    void save(Long fileId, String commitId);
     PagedData<CommitModel> getAllCommitsInFile(Long fileId, int page, int size);
     List<FileModel> getAllFilesInCommit(Long commitId);
 

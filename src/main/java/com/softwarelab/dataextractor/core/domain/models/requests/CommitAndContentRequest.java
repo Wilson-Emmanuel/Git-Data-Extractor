@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 @Builder
 public class CommitAndContentRequest {
-    private Long commitId;
-    private Long fileContentId;
+    private String commitId;
+    private String library;
+    private Long fileId;
 }
