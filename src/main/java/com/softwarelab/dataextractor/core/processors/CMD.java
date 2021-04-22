@@ -8,6 +8,7 @@ public enum CMD {
     BRANCH_COMMITS(" git log --oneline --format='firstinfo: %an **** %ae **** %H **** %ad' --date=iso"),
     DEVELOPER_WHO_ADDED_A_FILE("git log --diff-filter=A -- "),//followed by file url
     ALL_GIT_MANAGED_FILES("git ls-files"),
+    DOWNLOAD_PROJECT("git clone "),
     ALL_REMOTE_COMMITS_IN_ALL_BRANCHES("git rev-list --all --remotes --pretty --format='firstinfo: %an **** %ae **** %H **** %ad' --date=iso"),
     ALL_LOCAL_COMMITS_IN_ALL_BRANCHES("git rev-list --all --pretty --format='gjdea_firstinfo: %an **** %ae **** %H **** %ad' --date=iso"),
     ALL_LOCAL_COMMITS_IN_ALL_BRANCHES_REVERSED("git rev-list --all --pretty --reverse --format='firstinfo: %an **** %ae **** %H **** %ad' --date=iso"),
