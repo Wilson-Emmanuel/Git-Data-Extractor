@@ -1,0 +1,37 @@
+.mainbg{
+    -fx-background-color: #ecf3ff;
+}
+.button{
+    -fx-background-color: #32527b;
+    -fx-text-fill: #ffffab;
+}
+.trans{
+    -fx-background-color: transparent;
+}
+.trans:hover{
+    -fx-background-color: #ecf3ff;
+}
+#manageHbox{
+    -fx-background-color: #cccccc;
+}
+.whitebg{
+    -fx-background-color: #ffffab;
+}
+.cancel{
+    -fx-background-color: #900d09;
+    -fx-text-fill: #ffffab;
+}
+.menu-button > .arrow-button {
+    -fx-padding: 0;
+}
+
+.menu-button > .arrow-button > .arrow {
+    -fx-padding: 0;
+}
+/*.tab-label {*/
+/*    -fx-content-display: top;*/
+/*}*/
+/*.tab-pane {*/
+/*    -fx-tab-min-height: 50;*/
+/*    -fx-tab-max-height: 50;*/
+/*}*/
