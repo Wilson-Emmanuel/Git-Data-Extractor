@@ -6,6 +6,7 @@ import com.softwarelab.dataextractor.core.persistence.services.FilePackageServic
 import com.softwarelab.dataextractor.core.persistence.services.FileService;
 import com.softwarelab.dataextractor.core.persistence.services.ProjectService;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
+import javafx.concurrent.Task;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,6 +20,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Created by Wilson
@@ -27,7 +29,7 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class FileExtractor {
+public class FileExtractor{
     CMDProcessor cmdProcessor;
     ProjectService projectService;
     FilePackageService filePackageService;
@@ -47,13 +49,18 @@ public class FileExtractor {
      * @throws CMDProcessException
      * @throws IOException
      */
-    public FileCountModel extractAllFiles(@NonNull String projectPath) throws CMDProcessException, IOException {
+    public FileCountModel extractAllFiles(@NonNull String projectPath, TaskProcessor taskProcessor) throws CMDProcessException, IOException, InterruptedException {
 
         BufferedReader bufferedReader = cmdProcessor.processCMD(CMD.ALL_GIT_MANAGED_FILES.getCommand(), projectPath);
         String line;
+        //Stream<String> lines = bufferedReader.lines();
+//        long lineCount = lines.count();
+//        long currentCount = 0;
+
         List<FileRequest> fileRequests = new ArrayList<>();
         List<String> libraries;
         FileRequest fileRequest;
+
         while (true) {
             line = bufferedReader.readLine();
             if (line == null)
@@ -105,4 +112,6 @@ public class FileExtractor {
 
         filePackageService.save(packageName,project);
     }
+
+
 }

@@ -38,7 +38,7 @@ public class CommitExtractor {
      * @throws CMDProcessException
      * @throws IOException
      */
-    public int extractAllCommits(@NonNull String projectPath) throws CMDProcessException, IOException {
+    public int extractAllCommits(@NonNull String projectPath) throws CMDProcessException, IOException, InterruptedException {
 
         BufferedReader bufferedReader = cmdProcessor.processCMD(CMD.ALL_LOCAL_COMMITS_IN_ALL_BRANCHES.getCommand(), projectPath);
         String line;
