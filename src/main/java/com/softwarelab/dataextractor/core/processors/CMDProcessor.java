@@ -21,7 +21,7 @@ import java.io.InputStreamReader;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CMDProcessor {
     ProjectUseCase projectUseCase;
-    public  BufferedReader processCMD(String command, String projectPath) throws IOException, CMDProcessException {
+    public  BufferedReader processCMD(String command, String projectPath) throws IOException, CMDProcessException, InterruptedException {
         if (!projectUseCase.existsByLocalPath(projectPath))
             throw new CMDProcessException("Invalid Project Location");
 
@@ -30,13 +30,15 @@ public class CMDProcessor {
 
         return execute(command, projectPath);
     }
-    public  BufferedReader execute(String command, String directory) throws IOException {
+    public  BufferedReader execute(String command, String directory) throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder()
                 .command("cmd","/c",command)
                 .directory(new File(directory));
 
         processBuilder.redirectErrorStream(true);
         Process process = processBuilder.start();
+       process.waitFor();
+
         return new BufferedReader(new InputStreamReader(process.getInputStream()));
     }
     public  boolean isValidDir(String directory){

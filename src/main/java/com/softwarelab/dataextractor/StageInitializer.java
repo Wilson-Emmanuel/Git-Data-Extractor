@@ -46,17 +46,17 @@ public class StageInitializer implements ApplicationListener<GitJavaDataExtracto
 
             mainStage = stageReadyEvent.getStage();
 
-            Scene scene = new Scene(parent,700,450);
+            Scene scene = new Scene(parent);
             scene.getStylesheets().add("/main.css");
 
             //Screen screen = Screen.getPrimary();
             //double width = screen.getVisualBounds().getWidth();
             //double height = screen.getVisualBounds().getHeight();
             mainStage.setScene(scene);
-            //mainStage.setWidth(width);
-            //mainStage.setHeight(height);
+            mainStage.setWidth(835);
+            mainStage.setHeight(675);
             mainStage.setTitle(appTitle);
-            //mainStage.setResizable(false);
+            mainStage.setResizable(false);
             mainStage.getIcons().add(new Image("/data.png"));
             mainStage.centerOnScreen();
             mainStage.show();

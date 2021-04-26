@@ -5,6 +5,12 @@
     -fx-background-color: #32527b;
     -fx-text-fill: #ffffab;
 }
+
+.progress-bar > .track {
+    -fx-text-box-border:  #ecf3ff;
+    -fx-control-inner-background:  #ecf3ff;
+
+}
 .trans{
     -fx-background-color: transparent;
 }
@@ -18,8 +24,8 @@
     -fx-background-color: #ffffab;
 }
 .cancel{
-    -fx-background-color: #900d09;
-    -fx-text-fill: #ffffab;
+    -fx-background-color: #cfd2cd;
+    -fx-text-fill: #32527b;
 }
 .menu-button > .arrow-button {
     -fx-padding: 0;

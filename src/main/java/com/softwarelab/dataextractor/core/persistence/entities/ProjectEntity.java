@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "projects")
 public class ProjectEntity extends AbstractBaseEntity<Long> {
-    @Column(nullable = false,unique = true)
+    @Column(nullable = false)
     private String name;
 
     @Column

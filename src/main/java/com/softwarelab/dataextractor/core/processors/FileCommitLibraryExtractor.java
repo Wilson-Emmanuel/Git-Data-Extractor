@@ -46,7 +46,7 @@ public class FileCommitLibraryExtractor {
      * @throws IOException
      * @throws CMDProcessException
      */
-    public void linkCommitsToLibraries(FileModel model, String projectPath) throws IOException, CMDProcessException {
+    public void linkCommitsToLibraries(FileModel model, String projectPath) throws IOException, CMDProcessException, InterruptedException {
         BufferedReader bufferedReader = cmdProcessor.processCMD(CMD.ALL_CHANGES_MADE_ON_A_FILE.getCommand()+model.getNameUrl(), projectPath);
 
         //Extract all commits in this file and the changes made.
