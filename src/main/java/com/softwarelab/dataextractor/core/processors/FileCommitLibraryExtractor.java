@@ -1,11 +1,11 @@
 package com.softwarelab.dataextractor.core.processors;
 
-import com.softwarelab.dataextractor.core.domain.models.FileModel;
-import com.softwarelab.dataextractor.core.domain.models.requests.CommitAndContentRequest;
-import com.softwarelab.dataextractor.core.domain.models.requests.CommitRequest;
-import com.softwarelab.dataextractor.core.domain.services.usecases.CommitAndContentUseCase;
-import com.softwarelab.dataextractor.core.domain.services.usecases.CommitUseCase;
-import com.softwarelab.dataextractor.core.domain.services.usecases.FileCommitUseCase;
+import com.softwarelab.dataextractor.core.persistence.models.FileModel;
+import com.softwarelab.dataextractor.core.persistence.models.requests.CommitAndContentRequest;
+import com.softwarelab.dataextractor.core.persistence.models.requests.CommitRequest;
+import com.softwarelab.dataextractor.core.persistence.services.usecases.CommitAndContentUseCase;
+import com.softwarelab.dataextractor.core.persistence.services.usecases.CommitUseCase;
+import com.softwarelab.dataextractor.core.persistence.services.usecases.FileCommitUseCase;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

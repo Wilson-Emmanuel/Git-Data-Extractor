@@ -1,7 +1,6 @@
 package com.softwarelab.dataextractor.core.processors;
 
-import com.softwarelab.dataextractor.core.domain.services.ProjectService;
-import com.softwarelab.dataextractor.core.domain.services.usecases.ProjectUseCase;
+import com.softwarelab.dataextractor.core.persistence.services.usecases.ProjectUseCase;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

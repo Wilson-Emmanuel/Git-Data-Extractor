@@ -1,11 +1,10 @@
 package com.softwarelab.dataextractor.core.processors;
 
-import com.softwarelab.dataextractor.core.domain.models.FileCountModel;
-import com.softwarelab.dataextractor.core.domain.models.FileModel;
-import com.softwarelab.dataextractor.core.domain.models.requests.FileRequest;
-import com.softwarelab.dataextractor.core.domain.services.FilePackageService;
-import com.softwarelab.dataextractor.core.domain.services.FileService;
-import com.softwarelab.dataextractor.core.domain.services.ProjectService;
+import com.softwarelab.dataextractor.core.persistence.models.FileCountModel;
+import com.softwarelab.dataextractor.core.persistence.models.requests.FileRequest;
+import com.softwarelab.dataextractor.core.persistence.services.FilePackageService;
+import com.softwarelab.dataextractor.core.persistence.services.FileService;
+import com.softwarelab.dataextractor.core.persistence.services.ProjectService;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -1,8 +1,7 @@
 package com.softwarelab.dataextractor.core.processors;
 
-import com.softwarelab.dataextractor.core.domain.models.requests.CommitRequest;
-import com.softwarelab.dataextractor.core.domain.services.CommitService;
-import com.softwarelab.dataextractor.core.domain.services.ProjectService;
+import com.softwarelab.dataextractor.core.persistence.models.requests.CommitRequest;
+import com.softwarelab.dataextractor.core.persistence.services.CommitService;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
