@@ -30,7 +30,7 @@ public class GitJavaDataExtractorUIStarter extends Application {
         Platform.exit();
     }
 
-    public static class StageReadyEvent extends ApplicationEvent{
+     static class StageReadyEvent extends ApplicationEvent{
 
         public StageReadyEvent(Stage stage){super(stage);}
 
