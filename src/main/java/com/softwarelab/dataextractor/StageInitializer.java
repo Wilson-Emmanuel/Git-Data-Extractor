@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.ui;
+package com.softwarelab.dataextractor;
 
 import com.softwarelab.dataextractor.GitJavaDataExtractorUIStarter;
 import com.softwarelab.dataextractor.ui.controllers.MainController;
