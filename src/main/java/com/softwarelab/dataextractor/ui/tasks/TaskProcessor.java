@@ -1,7 +1,11 @@
-package com.softwarelab.dataextractor.core.processors;
+package com.softwarelab.dataextractor.ui.tasks;
 
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import com.softwarelab.dataextractor.core.persistence.models.ProjectModel;
+import com.softwarelab.dataextractor.core.services.processors.CommitExtractor;
+import com.softwarelab.dataextractor.core.services.processors.FileCommitLibraryExtractor;
+import com.softwarelab.dataextractor.core.services.processors.FileExtractor;
+import com.softwarelab.dataextractor.core.services.processors.ProjectDownloader;
 import javafx.concurrent.Task;
 import javafx.scene.control.Button;
 

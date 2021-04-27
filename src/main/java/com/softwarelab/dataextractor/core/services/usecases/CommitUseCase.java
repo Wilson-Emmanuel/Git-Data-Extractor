@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.core.persistence.services.usecases;
+package com.softwarelab.dataextractor.core.services.usecases;
 
 import com.softwarelab.dataextractor.core.persistence.entities.CommitEntity;
 import com.softwarelab.dataextractor.core.persistence.models.CommitModel;

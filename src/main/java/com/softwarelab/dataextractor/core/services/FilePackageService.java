@@ -1,10 +1,10 @@
-package com.softwarelab.dataextractor.core.persistence.services;
+package com.softwarelab.dataextractor.core.services;
 
 import com.softwarelab.dataextractor.core.persistence.entities.FilePackageEntity;
 import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
 import com.softwarelab.dataextractor.core.persistence.repositories.FilePackageRepository;
 import com.softwarelab.dataextractor.core.persistence.repositories.ProjectRepository;
-import com.softwarelab.dataextractor.core.persistence.services.usecases.FilePackageUseCase;
+import com.softwarelab.dataextractor.core.services.usecases.FilePackageUseCase;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;

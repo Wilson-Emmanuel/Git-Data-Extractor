@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.core.persistence.services;
+package com.softwarelab.dataextractor.core.services;
 
 import com.softwarelab.dataextractor.core.persistence.entities.DeveloperEntity;
 import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
@@ -6,9 +6,9 @@ import com.softwarelab.dataextractor.core.persistence.models.DeveloperModel;
 import com.softwarelab.dataextractor.core.persistence.models.PagedData;
 import com.softwarelab.dataextractor.core.persistence.models.requests.DeveloperRequest;
 import com.softwarelab.dataextractor.core.persistence.repositories.ProjectRepository;
-import com.softwarelab.dataextractor.core.persistence.services.usecases.CommitAndContentUseCase;
+import com.softwarelab.dataextractor.core.services.usecases.CommitAndContentUseCase;
 import com.softwarelab.dataextractor.core.persistence.repositories.DeveloperRepository;
-import com.softwarelab.dataextractor.core.persistence.services.usecases.DeveloperUseCase;
+import com.softwarelab.dataextractor.core.services.usecases.DeveloperUseCase;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;

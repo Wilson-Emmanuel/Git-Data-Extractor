@@ -1,12 +1,12 @@
-package com.softwarelab.dataextractor.core.processors;
+package com.softwarelab.dataextractor.core.services.processors;
 
 import com.softwarelab.dataextractor.core.persistence.models.FileCountModel;
 import com.softwarelab.dataextractor.core.persistence.models.requests.FileRequest;
-import com.softwarelab.dataextractor.core.persistence.services.FilePackageService;
-import com.softwarelab.dataextractor.core.persistence.services.FileService;
-import com.softwarelab.dataextractor.core.persistence.services.ProjectService;
+import com.softwarelab.dataextractor.core.services.FilePackageService;
+import com.softwarelab.dataextractor.core.services.FileService;
+import com.softwarelab.dataextractor.core.services.ProjectService;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
-import javafx.concurrent.Task;
+import com.softwarelab.dataextractor.ui.tasks.TaskProcessor;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * Created by Wilson
