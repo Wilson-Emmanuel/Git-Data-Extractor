@@ -1,6 +1,6 @@
-package com.softwarelab.dataextractor.core.persistence.services;
+package com.softwarelab.dataextractor.core.services;
 
-import com.softwarelab.dataextractor.core.persistence.services.usecases.ProjectUseCase;
+import com.softwarelab.dataextractor.core.services.usecases.ProjectUseCase;
 import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
 import com.softwarelab.dataextractor.core.persistence.models.ProjectModel;
 import com.softwarelab.dataextractor.core.persistence.models.requests.ProjectRequest;

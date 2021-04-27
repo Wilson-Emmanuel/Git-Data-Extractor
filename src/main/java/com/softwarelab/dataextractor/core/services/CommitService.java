@@ -1,8 +1,8 @@
-package com.softwarelab.dataextractor.core.persistence.services;
+package com.softwarelab.dataextractor.core.services;
 
 import com.softwarelab.dataextractor.core.persistence.entities.DeveloperEntity;
 import com.softwarelab.dataextractor.core.persistence.models.DeveloperModel;
-import com.softwarelab.dataextractor.core.persistence.services.usecases.CommitUseCase;
+import com.softwarelab.dataextractor.core.services.usecases.CommitUseCase;
 import com.softwarelab.dataextractor.core.persistence.entities.CommitEntity;
 import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
 import com.softwarelab.dataextractor.core.persistence.models.CommitModel;

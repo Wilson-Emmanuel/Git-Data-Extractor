@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.core.persistence.services.usecases;
+package com.softwarelab.dataextractor.core.services.usecases;
 
 /**
  * Created by Wilson

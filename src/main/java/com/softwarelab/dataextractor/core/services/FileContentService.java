@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.core.persistence.services;
+package com.softwarelab.dataextractor.core.services;
 
 import com.softwarelab.dataextractor.core.persistence.entities.FileContentEntity;
 import com.softwarelab.dataextractor.core.persistence.entities.FileEntity;
@@ -9,7 +9,7 @@ import com.softwarelab.dataextractor.core.persistence.repositories.FileContentRe
 import com.softwarelab.dataextractor.core.persistence.repositories.FilePackageRepository;
 import com.softwarelab.dataextractor.core.persistence.repositories.FileRepository;
 import com.softwarelab.dataextractor.core.persistence.repositories.ProjectRepository;
-import com.softwarelab.dataextractor.core.persistence.services.usecases.FileContentUseCase;
+import com.softwarelab.dataextractor.core.services.usecases.FileContentUseCase;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;

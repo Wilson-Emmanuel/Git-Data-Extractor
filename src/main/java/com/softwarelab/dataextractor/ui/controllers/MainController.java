@@ -1,6 +1,7 @@
 package com.softwarelab.dataextractor.ui.controllers;
 
-import com.softwarelab.dataextractor.core.processors.*;
+import com.softwarelab.dataextractor.core.services.processors.*;
+import com.softwarelab.dataextractor.ui.tasks.TaskProcessor;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;

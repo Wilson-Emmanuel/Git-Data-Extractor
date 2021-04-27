@@ -1,15 +1,14 @@
-package com.softwarelab.dataextractor.core.processors;
+package com.softwarelab.dataextractor.core.services.processors;
 
 import com.softwarelab.dataextractor.core.persistence.models.ProjectModel;
 import com.softwarelab.dataextractor.core.persistence.models.requests.ProjectRequest;
-import com.softwarelab.dataextractor.core.persistence.services.usecases.ProjectUseCase;
+import com.softwarelab.dataextractor.core.services.usecases.ProjectUseCase;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
 
