@@ -70,23 +70,21 @@ public class DeveloperService implements DeveloperUseCase {
     @Override
     public PagedData<DeveloperModel> getAllDeveloperByProject(Long projectId, int page, int size) {
         Optional<ProjectEntity> optionalProjectEntity = projectRepository.findById(projectId);
-        if(optionalProjectEntity.isEmpty())
-            return new PagedData<>(Collections.emptyList(),0,0);
-        Pageable pageable = PageRequest.of(page,size);
-        Page<DeveloperEntity> developerEntityPage = developerRepository.findAllByProject(optionalProjectEntity.get(),pageable);
-        return new PagedData<>(developerEntityPage.stream().map(this::entityToDeveloperModel).collect(Collectors.toList()),
-                developerEntityPage.getTotalElements(),
-                developerEntityPage.getTotalPages());
+        return getDeveloperModelPagedData(page, size, optionalProjectEntity);
     }
 
     @Override
     public PagedData<DeveloperModel> getAllDeveloperByProject(String projectPath, int page, int size) {
         Optional<ProjectEntity> optionalProjectEntity = projectRepository.findByLocalPath(projectPath);
-        if(optionalProjectEntity.isEmpty())
-            return new PagedData<>(Collections.emptyList(),0,0);
+        return getDeveloperModelPagedData(page, size, optionalProjectEntity);
+    }
 
-        Pageable pageable = PageRequest.of(page,size);
-        Page<DeveloperEntity> developerEntityPage = developerRepository.findAllByProject(optionalProjectEntity.get(),pageable);
+    private PagedData<DeveloperModel> getDeveloperModelPagedData(int page, int size, Optional<ProjectEntity> optionalProjectEntity) {
+        if (optionalProjectEntity.isEmpty())
+            return new PagedData<>(Collections.emptyList(), 0, 0);
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<DeveloperEntity> developerEntityPage = developerRepository.findAllByProject(optionalProjectEntity.get(), pageable);
         return new PagedData<>(developerEntityPage.stream().map(this::entityToDeveloperModel).collect(Collectors.toList()),
                 developerEntityPage.getTotalElements(),
                 developerEntityPage.getTotalPages());

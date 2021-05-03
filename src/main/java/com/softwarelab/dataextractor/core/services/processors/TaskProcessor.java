@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.ui.tasks;
+package com.softwarelab.dataextractor.core.services.processors;
 
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import com.softwarelab.dataextractor.core.persistence.models.ProjectModel;
@@ -8,35 +8,48 @@ import com.softwarelab.dataextractor.core.services.processors.FileExtractor;
 import com.softwarelab.dataextractor.core.services.processors.ProjectDownloader;
 import javafx.concurrent.Task;
 import javafx.scene.control.Button;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service(value = "taskProcessor")
+@Scope("prototype")
 public class TaskProcessor extends Task<Void> {
     private String remoteUrl;
     private String basePath;
-    private Button extractBtn;
-    private Button cancelBtn;
 
+    @Autowired
     private ProjectDownloader projectDownloader;
+    @Autowired
     private FileExtractor fileExtractor;
+    @Autowired
     private CommitExtractor commitExtractor;
+    @Autowired
     private FileCommitLibraryExtractor fileCommitLibraryExtractor;
 
-    public TaskProcessor( Button btn, Button cancelBtn){
-        this.extractBtn = btn;
-        this.cancelBtn = cancelBtn;
-    }
 
     public void setProjectUrlAndPath(String remoteUrl, String basePath) {
         this.remoteUrl = remoteUrl;
         this.basePath = basePath;
     }
+/*
+  @Override
+    public void start(Stage stage) throws Exception {
+        StackPane pane = new StackPane();
+        Scene scene = new Scene(pane,600,700);
 
+        stage.setScene(scene);
+        stage.setTitle("JavaFX Example");
+        stage.show();
+    }
+    public static void main(String[] args) {
+        launch(args);
+    }
+ */
     @Override
     protected Void call() throws Exception {
-
-        extractBtn.setDisable(true);
-        cancelBtn.setDisable(false);
 
         if (remoteUrl.isBlank() || !remoteUrl.trim().endsWith(".git"))
             throw new CMDProcessException("Invalid remote project url.");
@@ -59,45 +72,22 @@ public class TaskProcessor extends Task<Void> {
     @Override
     protected void succeeded() {
         super.succeeded();
-        completeTask("Done!");
+        this.updateMessage("Done!");
         updateProgress(100,100);
-
     }
 
     @Override
     protected void cancelled() {
         super.cancelled();
-        completeTask("Cancelled!");
-
+        this.updateMessage("Cancelled!");
+        updateProgress(0,0);
     }
 
     @Override
     protected void failed() {
         super.failed();
         Throwable ex = this.getException();
-        completeTask(String.format("%s \n%s",ex.getMessage(),"Failed!"));
-
+        this.updateMessage(String.format("%s \n%s",ex.getMessage(),"Failed!"));
+        updateProgress(0,0);
     }
-    private void completeTask(String message){
-        this.updateMessage(message);
-        extractBtn.setDisable(false);
-        cancelBtn.setDisable(true);
-    }
-
-    public void setProjectDownloader(ProjectDownloader projectDownloader) {
-        this.projectDownloader = projectDownloader;
-    }
-
-    public void setFileExtractor(FileExtractor fileExtractor) {
-        this.fileExtractor = fileExtractor;
-    }
-
-    public void setCommitExtractor(CommitExtractor commitExtractor) {
-        this.commitExtractor = commitExtractor;
-    }
-
-    public void setFileCommitLibraryExtractor(FileCommitLibraryExtractor fileCommitLibraryExtractor) {
-        this.fileCommitLibraryExtractor = fileCommitLibraryExtractor;
-    }
-
 }

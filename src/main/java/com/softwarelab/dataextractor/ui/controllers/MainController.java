@@ -1,7 +1,7 @@
 package com.softwarelab.dataextractor.ui.controllers;
 
 import com.softwarelab.dataextractor.core.services.processors.*;
-import com.softwarelab.dataextractor.ui.tasks.TaskProcessor;
+import com.softwarelab.dataextractor.core.services.processors.TaskProcessor;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -46,6 +47,9 @@ public class MainController implements Initializable {
     private FileCommitLibraryExtractor fileCommitLibraryExtractor;
     TaskProcessor taskProcessor;
 
+    @Autowired
+    private ApplicationContext applicationContext;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -60,9 +64,7 @@ public class MainController implements Initializable {
 
 
         extractBtn.setOnAction(actionEvent -> {
-            setupTask();
-            Thread taskThread = new Thread(taskProcessor);
-            taskThread.start();
+            setupAndRunTask();
         });
 
         cancelBtn.setOnAction(actionEvent -> {
@@ -72,13 +74,9 @@ public class MainController implements Initializable {
         });
 
     }
-    private void setupTask(){
-        taskProcessor = new TaskProcessor(extractBtn,cancelBtn);
+    private void setupAndRunTask(){
+        taskProcessor = (TaskProcessor)applicationContext.getBean("taskProcessor") ;
         taskProcessor.setProjectUrlAndPath(remoteUrlTxt.getText(), getProgramPath());
-        taskProcessor.setProjectDownloader(projectDownloader);
-        taskProcessor.setFileExtractor(fileExtractor);
-        taskProcessor.setCommitExtractor(commitExtractor);
-        taskProcessor.setFileCommitLibraryExtractor(fileCommitLibraryExtractor);
 
         taskProcessor.messageProperty().addListener((observableValue,oldValue,newValue) -> {
             progressMessage.appendText("\n"+newValue);
@@ -90,6 +88,25 @@ public class MainController implements Initializable {
             double value = newValue.byteValue()*100.0;
             progressIndicator.setText(value+"%");
         });
+        taskProcessor.setOnCancelled(workerStateEvent -> {
+            cancelBtn.setDisable(true);
+            extractBtn.setDisable(false);
+        });
+        taskProcessor.setOnFailed(workerStateEvent -> {
+            cancelBtn.setDisable(true);
+            extractBtn.setDisable(false);
+        });
+        taskProcessor.setOnScheduled(workerStateEvent -> {
+            cancelBtn.setDisable(false);
+            extractBtn.setDisable(true);
+        });
+        taskProcessor.setOnSucceeded(workerStateEvent -> {
+            cancelBtn.setDisable(true);
+            extractBtn.setDisable(false);
+        });
+
+        Thread taskThread = new Thread(taskProcessor);
+        taskThread.start();
     }
    
     private String getProgramPath(){
