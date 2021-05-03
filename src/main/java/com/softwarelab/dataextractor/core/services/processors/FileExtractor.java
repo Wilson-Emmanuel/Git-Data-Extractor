@@ -6,7 +6,6 @@ import com.softwarelab.dataextractor.core.services.FilePackageService;
 import com.softwarelab.dataextractor.core.services.FileService;
 import com.softwarelab.dataextractor.core.services.ProjectService;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
-import com.softwarelab.dataextractor.ui.tasks.TaskProcessor;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
