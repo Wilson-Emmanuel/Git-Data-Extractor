@@ -1,5 +1,6 @@
 package com.softwarelab.dataextractor.core.services.processors;
 
+import com.google.common.io.CharStreams;
 import com.softwarelab.dataextractor.core.services.usecases.ProjectUseCase;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import lombok.AccessLevel;
@@ -7,10 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Created by Wilson
@@ -21,34 +23,41 @@ import java.io.InputStreamReader;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CMDProcessor {
     ProjectUseCase projectUseCase;
-    public  BufferedReader processCMD(String command, String projectPath) throws IOException, CMDProcessException, InterruptedException {
+
+    public   List<String> processCMD(String command, String projectPath) throws IOException, CMDProcessException, InterruptedException {
         if (!projectUseCase.existsByLocalPath(projectPath))
             throw new CMDProcessException("Invalid Project Location");
 
         if (!isValidDir(projectPath))
             throw new CMDProcessException("Invalid git directory. Directory must contain the .git folder");
 
-        return execute(command, projectPath);
+       return execute(command, projectPath);
     }
-    public  BufferedReader execute(String command, String directory) throws IOException, InterruptedException {
+    public  List<String> execute(String command, String directory) throws IOException, InterruptedException {
         ProcessBuilder processBuilder = new ProcessBuilder()
                 .command("cmd","/c",command)
                 .directory(new File(directory));
 
         processBuilder.redirectErrorStream(true);
         Process process = processBuilder.start();
-       process.waitFor();
+       process.waitFor(6, TimeUnit.SECONDS);
 
-        return new BufferedReader(new InputStreamReader(process.getInputStream()));
+       List<String> result;
+       try(Reader reader = new InputStreamReader(process.getInputStream())){
+           result = CharStreams.readLines(reader);
+       }
+       return result;
     }
     public  boolean isValidDir(String directory){
         try{
-            String normalDir = execute(CMD.INSIDE_WORK_DIR_CMD.getCommand(),directory).readLine();
+            String normalDir = String.join("", execute(CMD.INSIDE_WORK_DIR_CMD.getCommand(), directory));
             if(!"true".equals(normalDir))
                 return false;
+
             //immediate parent dir shouldn't be a working dir
-            String parentDir = execute("cd .. && "+CMD.INSIDE_WORK_DIR_CMD.getCommand(),directory).readLine();
-            return !normalDir.equals(parentDir);
+            String parentDir = String.join("",execute("cd .. && "+CMD.INSIDE_WORK_DIR_CMD.getCommand(),directory));
+
+            return !"true".equals(parentDir);
         }catch (Exception e){
             return false;
         }

@@ -61,20 +61,19 @@ public class FileExtractor{
     public void extractAllFiles(@NonNull String projectPath) throws CMDProcessException, IOException, InterruptedException {
         message.set("Extracting files and libraries");
 
-        BufferedReader bufferedReader = cmdProcessor.processCMD(CMD.ALL_GIT_MANAGED_FILES.getCommand(), projectPath);
-        String line;
+        List<String> lines = cmdProcessor.processCMD(CMD.ALL_GIT_MANAGED_FILES.getCommand(), projectPath);
 
-        List<String> lines = bufferedReader.lines().collect(Collectors.toList());
         total.set(lines.size());
+        long runningTotl = 1;
 
         List<FileRequest> fileRequests = new ArrayList<>();
         List<String> libraries;
         FileRequest fileRequest;
 
-        for(int i=0; i<lines.size(); i++) {
-            runningTotal.set(i);
+        for(String line: lines) {
+            runningTotal.set(runningTotl++);
 
-            line = lines.get(i).trim();
+            line = line.trim();
             if (line.isBlank() || !line.endsWith(".java"))
                 continue;
 
@@ -90,34 +89,36 @@ public class FileExtractor{
                 fileRequests.add(fileRequest);
             }
         }
+        //if nothing is extracted, throw exception. It could fatal error from CMD
+        if(fileRequests.isEmpty())
+            throw new CMDProcessException("No file and library extracted: "+(lines.size()==1?lines.get(0):""));
+
         message.set("Saving extracted files and libraries");
         FileCountModel fileCountModel = fileService.saveBatch(fileRequests);
         message.set("Files: "+fileCountModel.fileCount+", Libraries: "+fileCountModel.libraryCount);
-
     }
 
     private List<String> extractFileLibraries(String filePath, String projectPath) throws IOException {
         List<String> libraries = new ArrayList<>();
 
-        Path path = Paths.get(projectPath+"\\"+filePath);
-        BufferedReader bufferedReader = Files.newBufferedReader(path);
-        String line = bufferedReader.readLine();
+        List<String> lines = Files.readAllLines(Paths.get(projectPath+"\\"+filePath));
         int indexOf;
-        while(true){
-            if(line == null){
+        for(String line: lines){
+
+            if(line.contains("class "))
                 break;
-            }
-            if(line.contains("class "))break;
 
             if(line.contains("package ")){
                 savePackage(line,projectPath);
-            }else if(line.contains("import ")){
+                continue;
+            }
+
+            if(line.contains("import ")){
                line = line.replace("import ","").trim();
                indexOf = line.indexOf(";");
                if(indexOf >=0 )
                     libraries.add(line.substring(0, indexOf));
             }
-            line = bufferedReader.readLine();
         }
         return libraries;
     }

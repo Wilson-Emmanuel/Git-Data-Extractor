@@ -40,13 +40,9 @@ public class CommitExtractor {
      */
     public int extractAllCommits(@NonNull String projectPath) throws CMDProcessException, IOException, InterruptedException {
 
-        BufferedReader bufferedReader = cmdProcessor.processCMD(CMD.ALL_LOCAL_COMMITS_IN_ALL_BRANCHES.getCommand(), projectPath);
-        String line;
+        List<String> lines = cmdProcessor.processCMD(CMD.ALL_LOCAL_COMMITS_IN_ALL_BRANCHES.getCommand(), projectPath);
         List<CommitRequest> commitRequests = new ArrayList<>();
-        while (true) {
-            line = bufferedReader.readLine();
-            if (line == null)
-                break;
+        for(String line: lines) {
             if (line.startsWith("gjdea_firstinfo:")){
                 commitRequests.add(extractCommit(line, projectPath));
             }
