@@ -62,6 +62,14 @@ public class TaskProcessor extends Task<Void> {
             fileExtractor.extractAllFiles(projectPath);
             fileExtractor.unbindListener(messageChangeListener,totalChangeListener,runningTotalChangeListener);
         }
+
+        //extracting all commits
+        if(!this.isCancelled()){
+            Objects.requireNonNull(projectPath);
+            commitExtractor.bindListener(messageChangeListener,totalChangeListener,runningTotalChangeListener);
+            commitExtractor.extractAllCommits(projectPath);
+            commitExtractor.unbindListener(messageChangeListener,totalChangeListener,runningTotalChangeListener);
+        }
         return null;
     }
 
@@ -84,7 +92,7 @@ public class TaskProcessor extends Task<Void> {
         super.failed();
         Throwable ex = this.getException();
         ex.printStackTrace();
-        this.updateMessage(String.format("%s \n%s",ex.getMessage(),"Failed!"));
+        this.updateMessage(String.format("Process Incomplete: %s \n",ex.getMessage()));
         updateProgress(0,0);
     }
 }

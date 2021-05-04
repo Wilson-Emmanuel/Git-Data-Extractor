@@ -87,7 +87,7 @@ public class MainController implements Initializable {
 
         taskProcessor.messageProperty().addListener((observableValue,oldValue,newValue) -> {
             progressMessage.appendText("\n"+newValue);
-            progressMessage.getScrollLeft();
+            progressMessage.setScrollLeft(0);
             if(clearMessageBtn.isDisabled())
                 clearMessageBtn.setDisable(false);
         });
