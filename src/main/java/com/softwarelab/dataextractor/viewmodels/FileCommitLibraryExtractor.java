@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.core.services.processors;
+package com.softwarelab.dataextractor.viewmodels;
 
 import com.softwarelab.dataextractor.core.persistence.models.FileModel;
 import com.softwarelab.dataextractor.core.persistence.models.requests.CommitAndContentRequest;
@@ -12,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 

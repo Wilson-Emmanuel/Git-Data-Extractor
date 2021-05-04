@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.core.services.processors;
+package com.softwarelab.dataextractor.viewmodels;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;

@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.core.services.processors;
+package com.softwarelab.dataextractor.viewmodels;
 
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import com.softwarelab.dataextractor.core.persistence.models.ProjectModel;
