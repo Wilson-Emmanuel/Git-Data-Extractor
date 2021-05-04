@@ -1,42 +1,28 @@
 package com.softwarelab.dataextractor.core.services.processors;
 
+import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import com.softwarelab.dataextractor.core.persistence.models.FileCountModel;
 import com.softwarelab.dataextractor.core.persistence.models.requests.FileRequest;
 import com.softwarelab.dataextractor.core.services.FilePackageService;
 import com.softwarelab.dataextractor.core.services.FileService;
-import com.softwarelab.dataextractor.core.services.ProjectService;
-import com.softwarelab.dataextractor.core.exception.CMDProcessException;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by Wilson
  * on Wed, 21/04/2021.
  */
 @Service
-public class FileExtractor{
+public class FileExtractor extends ProgressUpdator{
     private CMDProcessor cmdProcessor;
     private FilePackageService filePackageService;
     private FileService fileService;
-
-    private SimpleStringProperty message = new SimpleStringProperty("");
-    private SimpleDoubleProperty total = new SimpleDoubleProperty(0.0);
-    private SimpleDoubleProperty runningTotal = new SimpleDoubleProperty(0.0);
 
     public FileExtractor(CMDProcessor cmdProcessor, FilePackageService filePackageService, FileService fileService) {
         this.cmdProcessor = cmdProcessor;
@@ -131,17 +117,6 @@ public class FileExtractor{
             packageName = packageName.substring(0,indexOf);
 
         filePackageService.save(packageName,project);
-    }
-
-    public void bindListener(ChangeListener<String> messageListener, ChangeListener<Number> totalListener, ChangeListener<Number> runningTotalListener){
-        total.addListener(totalListener);
-        runningTotal.addListener(runningTotalListener);
-        message.addListener(messageListener);
-    }
-    public void unbindListener(ChangeListener<String> messageListener, ChangeListener<Number> totalListener, ChangeListener<Number> runningTotalListener){
-        total.removeListener(totalListener);
-        runningTotal.removeListener(runningTotalListener);
-        message.removeListener(messageListener);
     }
 
 
