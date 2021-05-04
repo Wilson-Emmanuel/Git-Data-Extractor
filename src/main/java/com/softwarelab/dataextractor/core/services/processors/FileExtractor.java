@@ -80,22 +80,23 @@ public class FileExtractor{
             message.set("Extracting libraries from "+line);
             libraries = extractFileLibraries(line, projectPath);
 
-            if(!libraries.isEmpty()){
-                fileRequest = FileRequest.builder()
-                .libraries(libraries)
-                .nameUrl(line)
-                .projectPath(projectPath)
-                .build();
-                fileRequests.add(fileRequest);
-            }
+            if(libraries.isEmpty())
+                continue;
+
+            fileRequest = FileRequest.builder()
+                            .libraries(libraries)
+                            .nameUrl(line)
+                            .projectPath(projectPath)
+                            .build();
+            fileRequests.add(fileRequest);
         }
-        //if nothing is extracted, throw exception. It could fatal error from CMD
+        //if nothing is extracted, throw exception. It could be a fatal error from CMD
         if(fileRequests.isEmpty())
             throw new CMDProcessException("No file and library extracted: "+(lines.size()==1?lines.get(0):""));
 
         message.set("Saving extracted files and libraries");
         FileCountModel fileCountModel = fileService.saveBatch(fileRequests);
-        message.set("Files: "+fileCountModel.fileCount+", Libraries: "+fileCountModel.libraryCount);
+        message.set(fileCountModel.fileCount+" Files and "+fileCountModel.libraryCount+" Libraries saved.");
     }
 
     private List<String> extractFileLibraries(String filePath, String projectPath) throws IOException {

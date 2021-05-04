@@ -3,6 +3,9 @@ package com.softwarelab.dataextractor.core.services.processors;
 import com.softwarelab.dataextractor.core.persistence.models.requests.CommitRequest;
 import com.softwarelab.dataextractor.core.services.CommitService;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,11 +22,18 @@ import java.util.List;
  * on Mon, 19/04/2021.
  */
 @Service
-@AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CommitExtractor {
-    CommitService commitService;
-    CMDProcessor cmdProcessor;
+    private CommitService commitService;
+    private CMDProcessor cmdProcessor;
+
+    private SimpleStringProperty message = new SimpleStringProperty("");
+    private SimpleDoubleProperty total = new SimpleDoubleProperty(0.0);
+    private SimpleDoubleProperty runningTotal = new SimpleDoubleProperty(0.0);
+
+    public CommitExtractor(CommitService commitService, CMDProcessor cmdProcessor) {
+        this.commitService = commitService;
+        this.cmdProcessor = cmdProcessor;
+    }
 
     /**
      * This method locally extracts all commits and save their information in the DB.
@@ -38,16 +48,29 @@ public class CommitExtractor {
      * @throws CMDProcessException
      * @throws IOException
      */
-    public int extractAllCommits(@NonNull String projectPath) throws CMDProcessException, IOException, InterruptedException {
+    public void extractAllCommits(@NonNull String projectPath) throws CMDProcessException, IOException, InterruptedException {
+        message.set("Extracting all commits...");
 
         List<String> lines = cmdProcessor.processCMD(CMD.ALL_LOCAL_COMMITS_IN_ALL_BRANCHES.getCommand(), projectPath);
         List<CommitRequest> commitRequests = new ArrayList<>();
+
+        long runningTotl = 1;
+        total.set(lines.size());
+        System.out.println(String.join("",lines));
         for(String line: lines) {
+            runningTotal.set(runningTotl++);
+
             if (line.startsWith("gjdea_firstinfo:")){
                 commitRequests.add(extractCommit(line, projectPath));
             }
         }
-        return commitService.batchSave(commitRequests,projectPath);
+        //if nothing is extracted, throw exception. It could be a fatal error from CMD
+        if(commitRequests.isEmpty())
+            throw new CMDProcessException("No commit extracted: "+(lines.size()==1?lines.get(0):""));
+
+        message.set("Setting all extracted commits...");
+        int totalSaved = commitService.batchSave(commitRequests,projectPath);
+        message.set(totalSaved+" commits saved!");
     }
 
     public CommitRequest extractCommit(String line, String projectPath) {
@@ -61,5 +84,15 @@ public class CommitExtractor {
                 .commitId(commitInfo[2].trim())
                 .commitDate(commitInfo[3].trim())
                 .build();
+    }
+    public void bindListener(ChangeListener<String> messageListener, ChangeListener<Number> totalListener, ChangeListener<Number> runningTotalListener){
+        total.addListener(totalListener);
+        runningTotal.addListener(runningTotalListener);
+        message.addListener(messageListener);
+    }
+    public void unbindListener(ChangeListener<String> messageListener, ChangeListener<Number> totalListener, ChangeListener<Number> runningTotalListener){
+        total.removeListener(totalListener);
+        runningTotal.removeListener(runningTotalListener);
+        message.removeListener(messageListener);
     }
 }

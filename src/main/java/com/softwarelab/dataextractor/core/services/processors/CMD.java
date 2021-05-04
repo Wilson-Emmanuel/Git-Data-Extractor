@@ -10,7 +10,7 @@ public enum CMD {
     ALL_GIT_MANAGED_FILES("git ls-files"),
     DOWNLOAD_PROJECT("git clone "),
     ALL_REMOTE_COMMITS_IN_ALL_BRANCHES("git rev-list --all --remotes --pretty --format='firstinfo: %an **** %ae **** %H **** %ad' --date=iso"),
-    ALL_LOCAL_COMMITS_IN_ALL_BRANCHES("git rev-list --all --pretty --format='gjdea_firstinfo: %an **** %ae **** %H **** %ad' --date=iso"),
+    ALL_LOCAL_COMMITS_IN_ALL_BRANCHES("git rev-list --all --pretty --format=\"gjdea_firstinfo: %an **** %ae **** %H **** %aI\" "),
     ALL_LOCAL_COMMITS_IN_ALL_BRANCHES_REVERSED("git rev-list --all --pretty --reverse --format='firstinfo: %an **** %ae **** %H **** %ad' --date=iso"),
     ALL_BRANCH_DEVS("git shortlog -sne"),
     ALL_FILES_IN_A_COMMIT(" git diff-tree --no-commit-id --name-only -r "),//followed by a commit id
