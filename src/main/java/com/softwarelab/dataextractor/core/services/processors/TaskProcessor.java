@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service(value = "taskProcessor")
@@ -56,6 +57,7 @@ public class TaskProcessor extends Task<Void> {
         }
         //extracting files and libs
         if(!this.isCancelled()){
+            Objects.requireNonNull(projectPath);
             fileExtractor.bindListener(messageChangeListener,totalChangeListener,runningTotalChangeListener);
             fileExtractor.extractAllFiles(projectPath);
             fileExtractor.unbindListener(messageChangeListener,totalChangeListener,runningTotalChangeListener);

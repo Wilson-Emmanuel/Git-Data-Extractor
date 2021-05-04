@@ -32,7 +32,7 @@
 .whitebg{
     -fx-background-color: #ffffab;
 }
-.cancel{
+.cancel, .cancel:hover, #clearMessageBtn, #clearMessageBtn:hover{
     -fx-background-color: #cfd2cd;
     -fx-text-fill: #32527b;
 }

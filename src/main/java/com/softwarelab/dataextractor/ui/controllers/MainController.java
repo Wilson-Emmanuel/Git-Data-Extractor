@@ -30,6 +30,8 @@ public class MainController implements Initializable {
     private StackPane progressPane;
     @FXML
     private TextArea progressMessage;
+    @FXML
+    private Button clearMessageBtn;
 
     private Text progressIndicator;
     private ProgressBar progressBar;
@@ -63,6 +65,11 @@ public class MainController implements Initializable {
         progressPane.getChildren().addAll(progressBar,progressIndicator);
 
 
+        clearMessageBtn.setOnAction( actionEvent -> {
+            progressMessage.clear();
+            clearMessageBtn.setDisable(true);
+        });
+
         extractBtn.setOnAction(actionEvent -> {
             setupAndRunTask();
         });
@@ -81,6 +88,8 @@ public class MainController implements Initializable {
         taskProcessor.messageProperty().addListener((observableValue,oldValue,newValue) -> {
             progressMessage.appendText("\n"+newValue);
             progressMessage.getScrollLeft();
+            if(clearMessageBtn.isDisabled())
+                clearMessageBtn.setDisable(false);
         });
         progressBar.progressProperty().unbind();
         progressBar.setProgress(0.0);
