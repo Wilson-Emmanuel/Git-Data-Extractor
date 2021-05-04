@@ -97,7 +97,7 @@ public class FileService implements FileUseCase {
 
             for(String library: fileRequest.getLibraries()){
                 //check if it's project library
-                if(filePackageRepository.existsFilePackageLike(library.substring(library.lastIndexOf(".")),fileRequest.getProjectPath())){
+                if(filePackageRepository.existsFilePackageLike(library.substring(0,library.lastIndexOf(".")),fileRequest.getProjectPath())){
                     continue;
                 }
                 //check if it's already saved

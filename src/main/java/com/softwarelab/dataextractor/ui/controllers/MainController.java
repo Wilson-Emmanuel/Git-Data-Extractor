@@ -80,6 +80,7 @@ public class MainController implements Initializable {
 
         taskProcessor.messageProperty().addListener((observableValue,oldValue,newValue) -> {
             progressMessage.appendText("\n"+newValue);
+            progressMessage.getScrollLeft();
         });
         progressBar.progressProperty().unbind();
         progressBar.setProgress(0.0);
