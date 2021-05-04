@@ -35,7 +35,7 @@ public class FilePackageService implements FilePackageUseCase {
     }
 
     @Override
-    public boolean save(String projectPath, String packageName) {
+    public boolean save(String packageName, String projectPath) {
         if(filePackageRepository.existsByPackageNameAndProject_LocalPath(packageName,projectPath))
             return true;
 

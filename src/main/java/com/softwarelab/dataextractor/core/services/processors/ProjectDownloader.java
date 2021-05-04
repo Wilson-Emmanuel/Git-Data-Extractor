@@ -1,23 +1,25 @@
 package com.softwarelab.dataextractor.core.services.processors;
 
+import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import com.softwarelab.dataextractor.core.persistence.models.ProjectModel;
 import com.softwarelab.dataextractor.core.persistence.models.requests.ProjectRequest;
 import com.softwarelab.dataextractor.core.services.usecases.ProjectUseCase;
-import com.softwarelab.dataextractor.core.exception.CMDProcessException;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class ProjectDownloader {
-    CMDProcessor cmdProcessor;
-    ProjectUseCase projectUseCase;
+    private CMDProcessor cmdProcessor;
+    private ProjectUseCase projectUseCase;
+
+
+
+    public ProjectDownloader(CMDProcessor cmdProcessor, ProjectUseCase projectUseCase) {
+        this.cmdProcessor = cmdProcessor;
+        this.projectUseCase = projectUseCase;
+    }
 
     public Optional<ProjectModel> downloadProject(String basePath, String remoteGit) throws CMDProcessException, IOException, InterruptedException {
         if(!remoteGit.endsWith(".git"))

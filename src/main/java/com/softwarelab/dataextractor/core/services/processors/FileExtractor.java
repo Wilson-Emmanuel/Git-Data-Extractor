@@ -6,6 +6,9 @@ import com.softwarelab.dataextractor.core.services.FilePackageService;
 import com.softwarelab.dataextractor.core.services.FileService;
 import com.softwarelab.dataextractor.core.services.ProjectService;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,19 +22,27 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Wilson
  * on Wed, 21/04/2021.
  */
 @Service
-@AllArgsConstructor
-@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FileExtractor{
-    CMDProcessor cmdProcessor;
-    ProjectService projectService;
-    FilePackageService filePackageService;
-    FileService fileService;
+    private CMDProcessor cmdProcessor;
+    private FilePackageService filePackageService;
+    private FileService fileService;
+
+    private SimpleStringProperty message = new SimpleStringProperty("");
+    private SimpleDoubleProperty total = new SimpleDoubleProperty(0.0);
+    private SimpleDoubleProperty runningTotal = new SimpleDoubleProperty(0.0);
+
+    public FileExtractor(CMDProcessor cmdProcessor, FilePackageService filePackageService, FileService fileService) {
+        this.cmdProcessor = cmdProcessor;
+        this.filePackageService = filePackageService;
+        this.fileService = fileService;
+    }
 
     /**
      * This method locally extracts all external libraries used in the various .java files managed by git on the provided project.
@@ -47,28 +58,29 @@ public class FileExtractor{
      * @throws CMDProcessException
      * @throws IOException
      */
-    public FileCountModel extractAllFiles(@NonNull String projectPath, TaskProcessor taskProcessor) throws CMDProcessException, IOException, InterruptedException {
+    public void extractAllFiles(@NonNull String projectPath) throws CMDProcessException, IOException, InterruptedException {
+        message.set("Extracting files and libraries");
 
         BufferedReader bufferedReader = cmdProcessor.processCMD(CMD.ALL_GIT_MANAGED_FILES.getCommand(), projectPath);
         String line;
-        //Stream<String> lines = bufferedReader.lines();
-//        long lineCount = lines.count();
-//        long currentCount = 0;
+
+        List<String> lines = bufferedReader.lines().collect(Collectors.toList());
+        total.set(lines.size());
 
         List<FileRequest> fileRequests = new ArrayList<>();
         List<String> libraries;
         FileRequest fileRequest;
 
-        while (true) {
-            line = bufferedReader.readLine();
-            if (line == null)
-                break;
+        for(int i=0; i<lines.size(); i++) {
+            runningTotal.set(i);
 
-            line = line.trim();
+            line = lines.get(i).trim();
             if (line.isBlank() || !line.endsWith(".java"))
                 continue;
 
+            message.set("Extracting libraries from "+line);
             libraries = extractFileLibraries(line, projectPath);
+
             if(!libraries.isEmpty()){
                 fileRequest = FileRequest.builder()
                 .libraries(libraries)
@@ -78,7 +90,10 @@ public class FileExtractor{
                 fileRequests.add(fileRequest);
             }
         }
-        return fileService.saveBatch(fileRequests);
+        message.set("Saving extracted files and libraries");
+        FileCountModel fileCountModel = fileService.saveBatch(fileRequests);
+        message.set("Files: "+fileCountModel.fileCount+", Libraries: "+fileCountModel.libraryCount);
+
     }
 
     private List<String> extractFileLibraries(String filePath, String projectPath) throws IOException {
@@ -87,17 +102,20 @@ public class FileExtractor{
         Path path = Paths.get(projectPath+"\\"+filePath);
         BufferedReader bufferedReader = Files.newBufferedReader(path);
         String line = bufferedReader.readLine();
+        int indexOf;
         while(true){
             if(line == null){
                 break;
             }
-            if(line.contains(" class "))break;
+            if(line.contains("class "))break;
 
             if(line.contains("package ")){
                 savePackage(line,projectPath);
             }else if(line.contains("import ")){
                line = line.replace("import ","").trim();
-               libraries.add(line.substring(line.indexOf(";")));
+               indexOf = line.indexOf(";");
+               if(indexOf >=0 )
+                    libraries.add(line.substring(0, indexOf));
             }
             line = bufferedReader.readLine();
         }
@@ -106,9 +124,22 @@ public class FileExtractor{
 
     private void savePackage(String packageName, String project){
         packageName = packageName.replace("package ","").trim();
-        packageName = packageName.substring(0,packageName.indexOf(";"));
+        int indexOf = packageName.indexOf(";");
+        if(indexOf >= 0)
+            packageName = packageName.substring(0,indexOf);
 
         filePackageService.save(packageName,project);
+    }
+
+    public void bindListener(ChangeListener<String> messageListener, ChangeListener<Number> totalListener, ChangeListener<Number> runningTotalListener){
+        total.addListener(totalListener);
+        runningTotal.addListener(runningTotalListener);
+        message.addListener(messageListener);
+    }
+    public void unbindListener(ChangeListener<String> messageListener, ChangeListener<Number> totalListener, ChangeListener<Number> runningTotalListener){
+        total.removeListener(totalListener);
+        runningTotal.removeListener(runningTotalListener);
+        message.removeListener(messageListener);
     }
 
 
