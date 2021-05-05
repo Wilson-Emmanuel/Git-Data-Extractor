@@ -1,18 +1,19 @@
-package com.softwarelab.dataextractor.core.services.processors;
+package com.softwarelab.dataextractor.viewmodels;
 
+import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import com.softwarelab.dataextractor.core.persistence.models.FileModel;
+import com.softwarelab.dataextractor.core.persistence.models.PagedData;
 import com.softwarelab.dataextractor.core.persistence.models.requests.CommitAndContentRequest;
 import com.softwarelab.dataextractor.core.persistence.models.requests.CommitRequest;
+import com.softwarelab.dataextractor.core.services.FileService;
 import com.softwarelab.dataextractor.core.services.usecases.CommitAndContentUseCase;
 import com.softwarelab.dataextractor.core.services.usecases.CommitUseCase;
 import com.softwarelab.dataextractor.core.services.usecases.FileCommitUseCase;
-import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -23,13 +24,34 @@ import java.util.*;
 @Service
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class FileCommitLibraryExtractor {
+public class FileCommitLibraryExtractor extends ProgressUpdator{
 
     CMDProcessor cmdProcessor;
     FileCommitUseCase fileCommitUseCase;
     CommitUseCase commitUseCase;
     CommitExtractor commitExtractor;
     CommitAndContentUseCase commitAndContentUseCase;
+    FileService fileService;
+
+    public void linkLibsToCommits(String projectPath) throws InterruptedException, CMDProcessException, IOException {
+        message.set("Linking libraries to commits...");
+
+        //fetch all files page by page
+        int curPage = 0, size = 50;
+        PagedData<FileModel> allFiles = fileService.getProjectFiles(projectPath,curPage++,size);
+        total.set(allFiles.getTotalItems());
+        int pages = allFiles.getTotalPages();
+        int runningTotl = 1;
+
+        do{
+            for(FileModel fileModel:allFiles.getItems()){
+                runningTotal.set(runningTotl++);
+                linkCommitsToLibraries(fileModel,projectPath);
+            }
+            allFiles = fileService.getProjectFiles(projectPath,curPage++,size);
+        }while (curPage < pages);
+
+    }
 
     /**
      * This method processes all the commits made on a file. Result of the of CMD command is constructed in such a way that the commits are ordered from the oldest
@@ -46,52 +68,58 @@ public class FileCommitLibraryExtractor {
      * @throws IOException
      * @throws CMDProcessException
      */
-    public void linkCommitsToLibraries(FileModel model, String projectPath) throws IOException, CMDProcessException, InterruptedException {
+    private void linkCommitsToLibraries(FileModel model, String projectPath) throws IOException, CMDProcessException, InterruptedException {
+        //all commit on a file sorted by date ascending (i.e. oldest commit first)
         List<String> lines = cmdProcessor.processCMD(CMD.ALL_CHANGES_MADE_ON_A_FILE.getCommand()+model.getNameUrl(), projectPath);
 
         //Extract all commits in this file and the changes made.
         //changes are temporary stored in a Hashmap using commit ID as keys
-        String commitId = null;
+        String commitInfo = null;
         StringBuilder sb = new StringBuilder();
         Map<CommitRequest, String> commitPatches = new HashMap<>();
 
         for(String line: lines){
-            if(line.startsWith("gjdea_firstinfo:")){//first line of every patch
-                if(commitId != null){
-                    commitPatches.put(commitExtractor.extractCommit(commitId,projectPath),sb.toString());
+            if(line.startsWith("gjdea_firstinfo:")){//first line of every patch on the cmd query result
+                if(commitInfo != null){
+                    commitPatches.put(commitExtractor.extractCommit(commitInfo,projectPath),sb.toString());
                     sb = new StringBuilder();
                 }
-                commitId = line.replace("gjdea_firstinfo:","").trim();;
+                commitInfo = line.trim();
             }else{
                 sb.append(line);
             }
         }
+        //insert the last uninserted commit
+        if(commitInfo != null)
+            commitPatches.put(commitExtractor.extractCommit(commitInfo,projectPath),sb.toString());
+
         updateDB(commitPatches,model);
     }
 
     private void updateDB(Map<CommitRequest,String> commitPatches, FileModel fileModel){
 
         Set<String> fileLibraries = fileModel.getLibraries();
-            for(Map.Entry<CommitRequest,String> entry: commitPatches.entrySet()){
+        List<CommitAndContentRequest> curCommitLibs;
+            for(Map.Entry<CommitRequest,String> patch : commitPatches.entrySet()){
 
                 //ensure commit exists in the DB or save it
-                if(!commitUseCase.existsByCommitId(entry.getKey().getCommitId()))
-                    commitUseCase.save(entry.getKey());
+                if(!commitUseCase.existsByCommitId(patch.getKey().getCommitId()))
+                    commitUseCase.save(patch.getKey());
 
                 //save commit and file
-                fileCommitUseCase.save(fileModel.getId(),entry.getKey().getCommitId());
+                fileCommitUseCase.save(fileModel.getId(), patch.getKey().getCommitId());
 
                 //extract libraries in this commit
-                List<CommitAndContentRequest> curCommitLibs = new ArrayList<>();
+                curCommitLibs = new ArrayList<>();//all libs added in the current patch for the first time
                 Iterator<String> iterator = fileLibraries.iterator();
 
-                //since patches are fetched chronologically, any patch that has any library, then the library was added
-                //in the commit for the firs time
+                //since patches are fetched chronologically starting from oldest, any commit patch that has any library,
+                // then the library was added in the commit for the first time
                 while(iterator.hasNext()){
                     String curLib = iterator.next();
-                    if(entry.getValue().contains(curLib)){
+                    if(patch.getValue().contains(curLib)){
                         curCommitLibs.add(CommitAndContentRequest.builder()
-                                        .commitId(entry.getValue())
+                                        .commitId(patch.getKey().getCommitId())
                                         .fileId(fileModel.getId())
                                         .library(curLib)
                                         .build());

@@ -1,7 +1,6 @@
 package com.softwarelab.dataextractor;
 
-import com.softwarelab.dataextractor.GitJavaDataExtractorUIStarter;
-import com.softwarelab.dataextractor.ui.controllers.MainController;
+import com.softwarelab.dataextractor.ui.view_controller.MainController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

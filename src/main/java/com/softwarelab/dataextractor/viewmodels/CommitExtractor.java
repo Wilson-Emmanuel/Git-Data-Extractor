@@ -1,20 +1,12 @@
-package com.softwarelab.dataextractor.core.services.processors;
+package com.softwarelab.dataextractor.viewmodels;
 
+import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import com.softwarelab.dataextractor.core.persistence.models.requests.CommitRequest;
 import com.softwarelab.dataextractor.core.services.CommitService;
-import com.softwarelab.dataextractor.core.exception.CMDProcessException;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,13 +14,10 @@ import java.util.List;
  * on Mon, 19/04/2021.
  */
 @Service
-public class CommitExtractor {
+public class CommitExtractor extends ProgressUpdator {
     private CommitService commitService;
     private CMDProcessor cmdProcessor;
 
-    private SimpleStringProperty message = new SimpleStringProperty("");
-    private SimpleDoubleProperty total = new SimpleDoubleProperty(0.0);
-    private SimpleDoubleProperty runningTotal = new SimpleDoubleProperty(0.0);
 
     public CommitExtractor(CommitService commitService, CMDProcessor cmdProcessor) {
         this.commitService = commitService;
@@ -48,29 +37,32 @@ public class CommitExtractor {
      * @throws CMDProcessException
      * @throws IOException
      */
-    public void extractAllCommits(@NonNull String projectPath) throws CMDProcessException, IOException, InterruptedException {
+    public int extractAllCommits(@NonNull String projectPath) throws CMDProcessException, IOException, InterruptedException {
         message.set("Extracting all commits...");
 
         List<String> lines = cmdProcessor.processCMD(CMD.ALL_LOCAL_COMMITS_IN_ALL_BRANCHES.getCommand(), projectPath);
-        List<CommitRequest> commitRequests = new ArrayList<>();
 
         long runningTotl = 1;
         total.set(lines.size());
-        System.out.println(String.join("",lines));
+        int totalSaved = 0;
+        CommitRequest commitRequest;
+
         for(String line: lines) {
             runningTotal.set(runningTotl++);
 
             if (line.startsWith("gjdea_firstinfo:")){
-                commitRequests.add(extractCommit(line, projectPath));
+                commitRequest = extractCommit(line, projectPath);
+                if(!commitService.existsByCommitId(commitRequest.getCommitId())){
+                    commitService.save(commitRequest);
+                    totalSaved++;
+                }
             }
         }
         //if nothing is extracted, throw exception. It could be a fatal error from CMD
-        if(commitRequests.isEmpty())
+        if(totalSaved == 0)
             throw new CMDProcessException("No commit extracted: "+(lines.size()==1?lines.get(0):""));
 
-        message.set("Setting all extracted commits...");
-        int totalSaved = commitService.batchSave(commitRequests,projectPath);
-        message.set(totalSaved+" commits saved!");
+        return totalSaved;
     }
 
     public CommitRequest extractCommit(String line, String projectPath) {
@@ -85,14 +77,5 @@ public class CommitExtractor {
                 .commitDate(commitInfo[3].trim())
                 .build();
     }
-    public void bindListener(ChangeListener<String> messageListener, ChangeListener<Number> totalListener, ChangeListener<Number> runningTotalListener){
-        total.addListener(totalListener);
-        runningTotal.addListener(runningTotalListener);
-        message.addListener(messageListener);
-    }
-    public void unbindListener(ChangeListener<String> messageListener, ChangeListener<Number> totalListener, ChangeListener<Number> runningTotalListener){
-        total.removeListener(totalListener);
-        runningTotal.removeListener(runningTotalListener);
-        message.removeListener(messageListener);
-    }
+
 }

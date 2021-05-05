@@ -1,7 +1,6 @@
-package com.softwarelab.dataextractor.ui.controllers;
+package com.softwarelab.dataextractor.ui.view_controller;
 
-import com.softwarelab.dataextractor.core.services.processors.*;
-import com.softwarelab.dataextractor.core.services.processors.TaskProcessor;
+import com.softwarelab.dataextractor.viewmodels.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -9,7 +8,6 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -33,7 +31,6 @@ public class MainController implements Initializable {
     @FXML
     private Button clearMessageBtn;
 
-    private Text progressIndicator;
     private ProgressBar progressBar;
 
     @Autowired
@@ -59,27 +56,22 @@ public class MainController implements Initializable {
         progressMessage.setEditable(false);
         cancelBtn.setDisable(true);
 
-        progressIndicator = new Text();
         progressBar = new ProgressBar(0.0);
         progressBar.setMinWidth(progressMessage.getPrefWidth());
-        progressPane.getChildren().addAll(progressBar,progressIndicator);
+        progressPane.getChildren().addAll(progressBar);
 
 
         clearMessageBtn.setOnAction( actionEvent -> {
             progressMessage.clear();
-            clearMessageBtn.setDisable(true);
         });
 
-        extractBtn.setOnAction(actionEvent -> {
-            setupAndRunTask();
-        });
+        extractBtn.setOnAction(actionEvent -> setupAndRunTask());
 
         cancelBtn.setOnAction(actionEvent -> {
             if(taskProcessor.isRunning()){
                 taskProcessor.cancel(true);
             }
         });
-
     }
     private void setupAndRunTask(){
         taskProcessor = (TaskProcessor)applicationContext.getBean("taskProcessor") ;
@@ -88,32 +80,13 @@ public class MainController implements Initializable {
         taskProcessor.messageProperty().addListener((observableValue,oldValue,newValue) -> {
             progressMessage.appendText("\n"+newValue);
             progressMessage.setScrollLeft(0);
-            if(clearMessageBtn.isDisabled())
-                clearMessageBtn.setDisable(false);
         });
+        clearMessageBtn.disableProperty().bind(progressMessage.textProperty().isEmpty());
         progressBar.progressProperty().unbind();
-        progressBar.setProgress(0.0);
        progressBar.progressProperty().bind(taskProcessor.progressProperty());
-        taskProcessor.progressProperty().addListener((observableValue,oldValue,newValue)->{
-            double value = newValue.byteValue()*100.0;
-            progressIndicator.setText(value+"%");
-        });
-        taskProcessor.setOnCancelled(workerStateEvent -> {
-            cancelBtn.setDisable(true);
-            extractBtn.setDisable(false);
-        });
-        taskProcessor.setOnFailed(workerStateEvent -> {
-            cancelBtn.setDisable(true);
-            extractBtn.setDisable(false);
-        });
-        taskProcessor.setOnScheduled(workerStateEvent -> {
-            cancelBtn.setDisable(false);
-            extractBtn.setDisable(true);
-        });
-        taskProcessor.setOnSucceeded(workerStateEvent -> {
-            cancelBtn.setDisable(true);
-            extractBtn.setDisable(false);
-        });
+
+        extractBtn.disableProperty().bind(taskProcessor.runningProperty());
+        cancelBtn.disableProperty().bind(taskProcessor.runningProperty().not());
 
         Thread taskThread = new Thread(taskProcessor);
         taskThread.start();
@@ -127,5 +100,5 @@ public class MainController implements Initializable {
         }
         return created?defaultLoc.getPath():System.getProperty("user.home");
     }
-    //https://github.com/apache/shiro.git
+
 }

@@ -1,6 +1,8 @@
 package com.softwarelab.dataextractor.core.services;
 
-import com.softwarelab.dataextractor.core.persistence.entities.*;
+import com.softwarelab.dataextractor.core.persistence.entities.FileContentEntity;
+import com.softwarelab.dataextractor.core.persistence.entities.FileEntity;
+import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
 import com.softwarelab.dataextractor.core.persistence.models.FileCountModel;
 import com.softwarelab.dataextractor.core.persistence.models.FileModel;
 import com.softwarelab.dataextractor.core.persistence.models.PagedData;
@@ -53,7 +55,7 @@ public class FileService implements FileUseCase {
                 continue;
             }
             //check if it's already saved
-            fileContentEntity = fileContentRepository.findAllByFileAndLibrary(fileEntity,library).orElse(null);
+            fileContentEntity = fileContentRepository.findByFileAndLibrary(fileEntity,library).orElse(null);
             if(fileContentEntity != null){
                 savedFileContentEntities.add(fileContentEntity);
             }else{
