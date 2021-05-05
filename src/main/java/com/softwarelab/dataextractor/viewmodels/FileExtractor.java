@@ -44,7 +44,7 @@ public class FileExtractor extends ProgressUpdator{
      * @throws CMDProcessException
      * @throws IOException
      */
-    public void extractAllFiles(@NonNull String projectPath) throws CMDProcessException, IOException, InterruptedException {
+    public FileCountModel extractAllFiles(@NonNull String projectPath) throws CMDProcessException, IOException, InterruptedException {
         message.set("Extracting files and libraries");
 
         List<String> lines = cmdProcessor.processCMD(CMD.ALL_GIT_MANAGED_FILES.getCommand(), projectPath);
@@ -81,8 +81,7 @@ public class FileExtractor extends ProgressUpdator{
             throw new CMDProcessException("No file and library extracted: "+(lines.size()==1?lines.get(0):""));
 
         message.set("Saving extracted files and libraries");
-        FileCountModel fileCountModel = fileService.saveBatch(fileRequests);
-        message.set(fileCountModel.fileCount+" Files and "+fileCountModel.libraryCount+" Libraries saved.");
+        return fileService.saveBatch(fileRequests);
     }
 
     private List<String> extractFileLibraries(String filePath, String projectPath) throws IOException {

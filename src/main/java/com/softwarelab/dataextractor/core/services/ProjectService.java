@@ -1,10 +1,10 @@
 package com.softwarelab.dataextractor.core.services;
 
-import com.softwarelab.dataextractor.core.services.usecases.ProjectUseCase;
 import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
 import com.softwarelab.dataextractor.core.persistence.models.ProjectModel;
 import com.softwarelab.dataextractor.core.persistence.models.requests.ProjectRequest;
 import com.softwarelab.dataextractor.core.persistence.repositories.ProjectRepository;
+import com.softwarelab.dataextractor.core.services.usecases.ProjectUseCase;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;

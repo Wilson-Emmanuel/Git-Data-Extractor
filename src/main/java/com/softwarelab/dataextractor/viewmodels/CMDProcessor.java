@@ -1,14 +1,17 @@
 package com.softwarelab.dataextractor.viewmodels;
 
 import com.google.common.io.CharStreams;
-import com.softwarelab.dataextractor.core.services.usecases.ProjectUseCase;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
+import com.softwarelab.dataextractor.core.services.usecases.ProjectUseCase;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

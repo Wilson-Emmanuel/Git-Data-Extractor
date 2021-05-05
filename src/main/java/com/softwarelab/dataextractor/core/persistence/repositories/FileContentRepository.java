@@ -19,6 +19,6 @@ import java.util.Set;
 public interface FileContentRepository extends JpaRepository<FileContentEntity, Long> {
     boolean existsByFileAndLibrary(FileEntity fileEntity, String library);
     Set<FileContentEntity> findAllByFile(FileEntity file);
-    Optional<FileContentEntity> findAllByFileAndLibrary(FileEntity file, String library);
+    Optional<FileContentEntity> findByFileAndLibrary(FileEntity file, String library);
     Page<FileContentEntity> findAllByFile_Project(ProjectEntity project, Pageable pageable);
 }

@@ -7,7 +7,6 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,29 +37,32 @@ public class CommitExtractor extends ProgressUpdator {
      * @throws CMDProcessException
      * @throws IOException
      */
-    public void extractAllCommits(@NonNull String projectPath) throws CMDProcessException, IOException, InterruptedException {
+    public int extractAllCommits(@NonNull String projectPath) throws CMDProcessException, IOException, InterruptedException {
         message.set("Extracting all commits...");
 
         List<String> lines = cmdProcessor.processCMD(CMD.ALL_LOCAL_COMMITS_IN_ALL_BRANCHES.getCommand(), projectPath);
-        List<CommitRequest> commitRequests = new ArrayList<>();
 
         long runningTotl = 1;
         total.set(lines.size());
-        System.out.println(String.join("",lines));
+        int totalSaved = 0;
+        CommitRequest commitRequest;
+
         for(String line: lines) {
             runningTotal.set(runningTotl++);
 
             if (line.startsWith("gjdea_firstinfo:")){
-                commitRequests.add(extractCommit(line, projectPath));
+                commitRequest = extractCommit(line, projectPath);
+                if(!commitService.existsByCommitId(commitRequest.getCommitId())){
+                    commitService.save(commitRequest);
+                    totalSaved++;
+                }
             }
         }
         //if nothing is extracted, throw exception. It could be a fatal error from CMD
-        if(commitRequests.isEmpty())
+        if(totalSaved == 0)
             throw new CMDProcessException("No commit extracted: "+(lines.size()==1?lines.get(0):""));
 
-        message.set("Setting all extracted commits...");
-        int totalSaved = commitService.batchSave(commitRequests,projectPath);
-        message.set(totalSaved+" commits saved!");
+        return totalSaved;
     }
 
     public CommitRequest extractCommit(String line, String projectPath) {

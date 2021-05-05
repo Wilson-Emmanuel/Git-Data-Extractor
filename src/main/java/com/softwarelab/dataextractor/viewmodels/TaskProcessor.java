@@ -1,6 +1,7 @@
 package com.softwarelab.dataextractor.viewmodels;
 
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
+import com.softwarelab.dataextractor.core.persistence.models.FileCountModel;
 import com.softwarelab.dataextractor.core.persistence.models.ProjectModel;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -59,16 +60,28 @@ public class TaskProcessor extends Task<Void> {
         if(!this.isCancelled()){
             Objects.requireNonNull(projectPath);
             fileExtractor.bindListener(messageChangeListener,totalChangeListener,runningTotalChangeListener);
-            fileExtractor.extractAllFiles(projectPath);
+            FileCountModel fileCountModel =fileExtractor.extractAllFiles(projectPath);
+            updateMessage(fileCountModel.fileCount+" Files and "+fileCountModel.libraryCount+" Libraries saved.");
             fileExtractor.unbindListener(messageChangeListener,totalChangeListener,runningTotalChangeListener);
+            updateProgress(0.0,0.0);
         }
 
         //extracting all commits
         if(!this.isCancelled()){
             Objects.requireNonNull(projectPath);
             commitExtractor.bindListener(messageChangeListener,totalChangeListener,runningTotalChangeListener);
-            commitExtractor.extractAllCommits(projectPath);
+            int commitsSaved = commitExtractor.extractAllCommits(projectPath);
+            updateMessage(commitsSaved+" commits saved!");
             commitExtractor.unbindListener(messageChangeListener,totalChangeListener,runningTotalChangeListener);
+            updateProgress(0.0,0.0);
+        }
+
+        //linking libs with commits
+        if(!this.isCancelled()){
+            Objects.requireNonNull(projectPath);
+            fileCommitLibraryExtractor.bindListener(messageChangeListener,totalChangeListener,runningTotalChangeListener);
+            fileCommitLibraryExtractor.linkLibsToCommits(projectPath);
+            fileCommitLibraryExtractor.unbindListener(messageChangeListener,totalChangeListener,runningTotalChangeListener);
         }
         return null;
     }

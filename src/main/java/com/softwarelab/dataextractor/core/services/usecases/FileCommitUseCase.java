@@ -1,8 +1,8 @@
 package com.softwarelab.dataextractor.core.services.usecases;
 
+import com.softwarelab.dataextractor.core.persistence.models.CommitModel;
 import com.softwarelab.dataextractor.core.persistence.models.FileModel;
 import com.softwarelab.dataextractor.core.persistence.models.PagedData;
-import com.softwarelab.dataextractor.core.persistence.models.CommitModel;
 
 import java.util.List;
 

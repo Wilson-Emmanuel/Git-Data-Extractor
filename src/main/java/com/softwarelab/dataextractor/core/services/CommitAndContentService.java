@@ -40,7 +40,7 @@ public class CommitAndContentService implements CommitAndContentUseCase {
         if(optionalFileEntity.isEmpty())
             return null;
 
-        Optional<FileContentEntity> optionalFileContentEntity = fileContentRepository.findAllByFileAndLibrary(optionalFileEntity.get(),commitAndContentRequest.getLibrary());
+        Optional<FileContentEntity> optionalFileContentEntity = fileContentRepository.findByFileAndLibrary(optionalFileEntity.get(),commitAndContentRequest.getLibrary());
         if(optionalFileContentEntity.isEmpty())
             return null;
 
@@ -64,7 +64,7 @@ public class CommitAndContentService implements CommitAndContentUseCase {
         List<CommitAndContentEntity> commitAndContentEntities = new ArrayList<>();
         CommitAndContentEntity commitAndContentEntity;
         for(CommitAndContentRequest commitAndContentRequest: commitAndContentRequests){
-            Optional<FileContentEntity> optionalFileContentEntity = fileContentRepository.findAllByFileAndLibrary(optionalFileEntity.get(),commitAndContentRequest.getLibrary());
+            Optional<FileContentEntity> optionalFileContentEntity = fileContentRepository.findByFileAndLibrary(optionalFileEntity.get(),commitAndContentRequest.getLibrary());
             if(optionalFileContentEntity.isEmpty())
                 continue;
 

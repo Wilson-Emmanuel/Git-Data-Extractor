@@ -46,7 +46,7 @@ public class FileContentService implements FileContentUseCase {
         if(filePackageRepository.existsFilePackageLike(library.substring(library.lastIndexOf(".")),optionalFileEntity.get().getProject().getLocalPath())){
             return null;
         }
-        FileContentEntity fileContentEntity = fileContentRepository.findAllByFileAndLibrary(optionalFileEntity.get(),fileContentRequest.getLibrary())
+        FileContentEntity fileContentEntity = fileContentRepository.findByFileAndLibrary(optionalFileEntity.get(),fileContentRequest.getLibrary())
                 .orElseGet(() -> fileContentRepository.save(FileContentEntity.builder()
                         .file(optionalFileEntity.get())
                         .library(fileContentRequest.getLibrary())

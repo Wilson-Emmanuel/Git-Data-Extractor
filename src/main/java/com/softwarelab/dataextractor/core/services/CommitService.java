@@ -1,16 +1,16 @@
 package com.softwarelab.dataextractor.core.services;
 
-import com.softwarelab.dataextractor.core.persistence.entities.DeveloperEntity;
-import com.softwarelab.dataextractor.core.persistence.models.DeveloperModel;
-import com.softwarelab.dataextractor.core.services.usecases.CommitUseCase;
 import com.softwarelab.dataextractor.core.persistence.entities.CommitEntity;
+import com.softwarelab.dataextractor.core.persistence.entities.DeveloperEntity;
 import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
 import com.softwarelab.dataextractor.core.persistence.models.CommitModel;
+import com.softwarelab.dataextractor.core.persistence.models.DeveloperModel;
 import com.softwarelab.dataextractor.core.persistence.models.PagedData;
 import com.softwarelab.dataextractor.core.persistence.models.requests.CommitRequest;
 import com.softwarelab.dataextractor.core.persistence.repositories.CommitRepository;
 import com.softwarelab.dataextractor.core.persistence.repositories.DeveloperRepository;
 import com.softwarelab.dataextractor.core.persistence.repositories.ProjectRepository;
+import com.softwarelab.dataextractor.core.services.usecases.CommitUseCase;
 import com.softwarelab.dataextractor.core.utilities.DateTimeUtil;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -52,6 +52,9 @@ public class CommitService implements CommitUseCase {
         CommitEntity commitEntity;
 
         for(CommitRequest commitRequest: commitRequests){
+            if(existsByCommitId(commitRequest.getCommitId()))
+                continue;
+
              developerEntity = developerRepository.findByNameAndEmailAndProject_LocalPath(commitRequest.getDeveloperName(),commitRequest.getDeveloperEmail(),commitRequest.getProjectPath())
                     .orElseGet(()-> developerRepository.save(
                             DeveloperEntity.builder()
@@ -75,19 +78,27 @@ public class CommitService implements CommitUseCase {
 
     @Override
     public CommitModel save(CommitRequest commitRequest) {
+        ProjectEntity projectEntity = projectRepository.findByLocalPath(commitRequest.getProjectPath()).orElse(null);
+        if(projectEntity == null)
+            return null;
+
         CommitEntity commitEntity = commitRepository.findByCommitId(commitRequest.getCommitId()).orElse(null);
         if(commitEntity != null)
             return entityToCommit(commitEntity);
 
-        Optional<DeveloperEntity> optionalDeveloperEntity = developerRepository.findByNameAndEmailAndProject_LocalPath(commitRequest.getDeveloperName(),
-                commitRequest.getDeveloperEmail(),commitRequest.getProjectPath());
-        if(optionalDeveloperEntity.isEmpty())
-            return null;
+        DeveloperEntity developerEntity = developerRepository.findByNameAndEmailAndProject_LocalPath(commitRequest.getDeveloperName(),commitRequest.getDeveloperEmail(),commitRequest.getProjectPath())
+                .orElseGet(()-> developerRepository.save(
+                        DeveloperEntity.builder()
+                                .name(commitRequest.getDeveloperName())
+                                .email(commitRequest.getDeveloperEmail())
+                                .project(projectEntity)
+                                .build()
+                ));
 
          commitEntity = CommitEntity.builder()
                 .commitDate(DateTimeUtil.getInstantTime(commitRequest.getCommitDate()))
                 .commitId(commitRequest.getCommitId())
-                .developer(optionalDeveloperEntity.get())
+                .developer(developerEntity)
                 .build();
         return entityToCommit(commitRepository.save(commitEntity));
     }
