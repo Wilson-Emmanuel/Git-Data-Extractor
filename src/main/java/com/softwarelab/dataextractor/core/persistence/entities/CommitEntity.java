@@ -1,13 +1,16 @@
 package com.softwarelab.dataextractor.core.persistence.entities;
 
 import lombok.*;
+import org.checkerframework.checker.units.qual.C;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.Instant;
 
 /**
  * Created by Wilson
- * on Sun, 18/04/2021.
+ * on Tue, 25/05/2021.
  */
 @Setter
 @Getter
@@ -16,15 +19,19 @@ import java.time.Instant;
 @Builder
 @Entity
 @Table(name = "commits")
-public class CommitEntity extends AbstractBaseEntity<Long> {
-
-    @Column(nullable = false,unique = true)
+public class CommitEntity extends AbstractBaseEntity<Long>{
+    @Column
     private String commitId;
 
-    @ManyToOne(fetch = FetchType.EAGER,optional = false)
-    private DeveloperEntity developer;
+    @Column
+    private String developerName;
+
+    @Column
+    private String developerEmail;
 
     @Column
     private Instant commitDate;
 
+    @Column
+    private String fileUrl;
 }

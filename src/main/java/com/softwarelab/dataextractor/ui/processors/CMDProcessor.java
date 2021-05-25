@@ -1,8 +1,7 @@
-package com.softwarelab.dataextractor.viewmodels;
+package com.softwarelab.dataextractor.ui.processors;
 
 import com.google.common.io.CharStreams;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
-import com.softwarelab.dataextractor.core.services.usecases.ProjectUseCase;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,11 +22,10 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CMDProcessor {
-    ProjectUseCase projectUseCase;
 
     public   List<String> processCMD(String command, String projectPath) throws IOException, CMDProcessException, InterruptedException {
-        if (!projectUseCase.existsByLocalPath(projectPath))
-            throw new CMDProcessException("Invalid Project Location");
+        //if (!projectUseCase.existsByLocalPath(projectPath))
+            //throw new CMDProcessException("Invalid Project Location");
 
         if (!isValidDir(projectPath))
             throw new CMDProcessException("Invalid git directory. Directory must contain the .git folder");

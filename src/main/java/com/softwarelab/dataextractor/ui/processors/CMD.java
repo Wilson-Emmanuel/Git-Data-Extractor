@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.viewmodels;
+package com.softwarelab.dataextractor.ui.processors;
 
 /**
  * Created by Wilson

@@ -1,6 +1,5 @@
 package com.softwarelab.dataextractor.ui.view_controller;
 
-import com.softwarelab.dataextractor.viewmodels.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -33,17 +32,6 @@ public class MainController implements Initializable {
 
     private ProgressBar progressBar;
 
-    @Autowired
-    private ProjectDownloader projectDownloader;
-
-    @Autowired
-    private FileExtractor fileExtractor;
-
-    @Autowired
-    private CommitExtractor commitExtractor;
-
-    @Autowired
-    private FileCommitLibraryExtractor fileCommitLibraryExtractor;
     TaskProcessor taskProcessor;
 
     @Autowired
@@ -75,7 +63,7 @@ public class MainController implements Initializable {
     }
     private void setupAndRunTask(){
         taskProcessor = (TaskProcessor)applicationContext.getBean("taskProcessor") ;
-        taskProcessor.setProjectUrlAndPath(remoteUrlTxt.getText(), getProgramPath());
+        taskProcessor.setRemoteUrl(remoteUrlTxt.getText(), getProgramPath());
 
         taskProcessor.messageProperty().addListener((observableValue,oldValue,newValue) -> {
             progressMessage.appendText("\n"+newValue);
