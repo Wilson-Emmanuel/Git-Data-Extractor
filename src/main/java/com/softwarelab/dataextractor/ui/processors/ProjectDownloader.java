@@ -1,27 +1,22 @@
-package com.softwarelab.dataextractor.viewmodels;
+package com.softwarelab.dataextractor.ui.processors;
 
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
-import com.softwarelab.dataextractor.core.persistence.models.ProjectModel;
-import com.softwarelab.dataextractor.core.persistence.models.requests.ProjectRequest;
-import com.softwarelab.dataextractor.core.services.usecases.ProjectUseCase;
+import com.softwarelab.dataextractor.core.persistence.models.dtos.ProjectModel;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Service
 public class ProjectDownloader {
     private CMDProcessor cmdProcessor;
-    private ProjectUseCase projectUseCase;
 
 
 
-    public ProjectDownloader(CMDProcessor cmdProcessor, ProjectUseCase projectUseCase) {
+    public ProjectDownloader(CMDProcessor cmdProcessor) {
         this.cmdProcessor = cmdProcessor;
-        this.projectUseCase = projectUseCase;
     }
 
-    public Optional<ProjectModel> downloadProject(String basePath, String remoteGit) throws CMDProcessException, IOException, InterruptedException {
+    public ProjectModel downloadProject(String basePath, String remoteGit) throws CMDProcessException, IOException, InterruptedException {
         if(!remoteGit.endsWith(".git"))
             throw new CMDProcessException("invalid remote project url");
 
@@ -37,12 +32,11 @@ public class ProjectDownloader {
             throw new CMDProcessException("Invalid project path: "+projectPath);
 
         //save and return project if successful
-        ProjectRequest projectRequest = ProjectRequest.builder()
+        return ProjectModel.builder()
                 .localPath(projectPath)
                 .remoteUrl(remoteGit)
                 .name(projectName)
                 .build();
-        return Optional.of(projectUseCase.save(projectRequest));
     }
 
 }

@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.core.persistence.models;
+package com.softwarelab.dataextractor.core.persistence.models.dtos;
 
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +15,7 @@ import java.util.Set;
 public class FileModel {
     private Long id;
     private String nameUrl;
+    private String packageName;
     @Builder.Default
     private Set<String> libraries = Collections.emptySet();
 }

@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.core.persistence.models;
+package com.softwarelab.dataextractor.core.persistence.models.dtos;
 
 import lombok.Builder;
 import lombok.Data;
