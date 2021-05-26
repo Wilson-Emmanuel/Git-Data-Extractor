@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 /**
  * Created by Wilson
- * on Sun, 18/04/2021.
+ * on Tue, 25/05/2021.
  */
 @Setter
 @Getter
@@ -17,14 +17,13 @@ import javax.persistence.Table;
 @Builder
 @Entity
 @Table(name = "projects")
-public class ProjectEntity extends AbstractBaseEntity<Long> {
-    @Column(nullable = false)
+public class ProjectEntity extends AbstractBaseEntity<Long>{
+    @Column
     private String name;
 
     @Column
+    private String localPath;
+
+    @Column
     private String remoteUrl;
-
-    @Column(nullable = false,unique = true)
-    private String localPath;//this is the base url to the folder that contains the .git installed
-
 }

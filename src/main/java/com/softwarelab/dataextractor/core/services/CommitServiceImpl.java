@@ -2,6 +2,7 @@ package com.softwarelab.dataextractor.core.services;
 
 import com.softwarelab.dataextractor.core.persistence.entities.CommitEntity;
 import com.softwarelab.dataextractor.core.persistence.entities.LibraryEntity;
+import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
 import com.softwarelab.dataextractor.core.persistence.models.dtos.CommitModel;
 import com.softwarelab.dataextractor.core.persistence.repositories.CommitRepository;
 import com.softwarelab.dataextractor.core.persistence.repositories.LibraryRepository;
@@ -29,24 +30,29 @@ public class CommitServiceImpl implements CommitService {
     LibraryRepository libraryRepository;
 
     @Override
-    public CommitEntity saveCommit(CommitModel commitModel) {
+    public CommitEntity saveCommit(CommitModel commitModel,ProjectEntity projectEntity) {
         CommitEntity commitEntity = CommitEntity.builder()
                 .commitId(commitModel.getCommitId())
                 .commitDate(DateTimeUtil.getInstantTime(commitModel.getCommitDate()))
                 .developerName(commitModel.getDeveloperName())
                 .developerEmail(commitModel.getDeveloperEmail())
                 .fileUrl(commitModel.getFileUrl())
+                .project(projectEntity)
                 .build();
         return commitRepository.save(commitEntity);
 
     }
 
     @Override
-    public void saveCommitAll(List<CommitModel> commitModels) {
+    public void saveCommitAll(List<CommitModel> commitModels, ProjectEntity projectEntity) {
+
         List<LibraryEntity> libs = new ArrayList<>();
 
         for(CommitModel commitModel: commitModels){
-            final CommitEntity commitEntity = saveCommit(commitModel);
+            if(commitRepository.existsByCommitIdAndProjectAndDeveloperName(commitModel.getCommitId(), projectEntity, commitModel.getDeveloperName()))
+                continue;
+
+            final CommitEntity commitEntity = saveCommit(commitModel,projectEntity);
 
             libs.addAll(commitModel.getLibraries().stream()
                     .map(lib->LibraryEntity.builder()
