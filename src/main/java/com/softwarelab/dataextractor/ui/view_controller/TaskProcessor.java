@@ -1,8 +1,8 @@
 package com.softwarelab.dataextractor.ui.view_controller;
 
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
+import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
 import com.softwarelab.dataextractor.core.persistence.models.dtos.FileModel;
-import com.softwarelab.dataextractor.core.persistence.models.dtos.ProjectModel;
 import com.softwarelab.dataextractor.core.services.usecases.CommitService;
 import com.softwarelab.dataextractor.ui.processors.FileCommitProcessor;
 import com.softwarelab.dataextractor.ui.processors.FileProcessor;
@@ -41,7 +41,7 @@ public class TaskProcessor extends Task<Void> {
             throw new CMDProcessException("Invalid remote project URL.");
 
         //downloading projects
-        ProjectModel project = null;
+        ProjectEntity project = null;
         if (!this.isCancelled()) {
             updateMessage("Downloading project from "+remoteUrl+"...");
             project = projectDownloader.downloadProject(basePath, remoteUrl);
@@ -86,7 +86,7 @@ public class TaskProcessor extends Task<Void> {
                 String fileName = fileModels.get(i).getNameUrl();
                 updateProgress(i+1,fileModels.size());
                 updateMessage("Analyzing commit patches from "+fileName);
-                commitService.saveCommitAll(fileCommitProcessor.extractFileCommits(fileModels.get(i),project.getLocalPath(),packages));
+                commitService.saveCommitAll(fileCommitProcessor.extractFileCommits(fileModels.get(i),project.getLocalPath(),packages), project );
             }
         }
 

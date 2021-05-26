@@ -2,18 +2,15 @@ package com.softwarelab.dataextractor.core.persistence.repositories;
 
 import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 /**
  * Created by Wilson
- * on Sun, 18/04/2021.
+ * on Tue, 25/05/2021.
  */
-@Repository
-public interface ProjectRepository extends JpaRepository<ProjectEntity,Long> {
-    Optional<ProjectEntity> findByLocalPath(String localPath);
-    Optional<ProjectEntity> findByRemoteUrl(String remoteUrl);
-    boolean existsByLocalPath(String localPath);
+public interface ProjectRepository extends JpaRepository<ProjectEntity,Integer> {
     boolean existsByRemoteUrl(String remoteUrl);
+
+    Optional<ProjectEntity> findByRemoteUrl(String remoteUrl);
 }

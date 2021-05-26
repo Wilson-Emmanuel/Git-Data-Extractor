@@ -3,9 +3,7 @@ package com.softwarelab.dataextractor.core.persistence.entities;
 import lombok.*;
 import org.checkerframework.checker.units.qual.C;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.Instant;
 
 /**
@@ -34,4 +32,7 @@ public class CommitEntity extends AbstractBaseEntity<Long>{
 
     @Column
     private String fileUrl;
+
+    @ManyToOne(optional = false,fetch = FetchType.LAZY)
+    private ProjectEntity project;
 }
