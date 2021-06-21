@@ -1,5 +1,6 @@
 package com.softwarelab.dataextractor;
 
+import com.softwarelab.dataextractor.core.utilities.NotificationUtil;
 import com.softwarelab.dataextractor.ui.view_controller.MainController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -37,6 +38,7 @@ public class StageInitializer implements ApplicationListener<GitJavaDataExtracto
     @Override
     public void onApplicationEvent(GitJavaDataExtractorUIStarter.StageReadyEvent stageReadyEvent) {
 
+        setDefaultExceptionHandler();
         try{
            FXMLLoader fxmlLoader = new FXMLLoader(mainResource.getURL());
             fxmlLoader.setController(mainController);
@@ -60,12 +62,27 @@ public class StageInitializer implements ApplicationListener<GitJavaDataExtracto
             mainStage.centerOnScreen();
             mainStage.show();
         }catch (Exception ex){
-            ex.printStackTrace();
+            //ex.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Application Error");
             alert.setContentText("An error occurred while starting the application. Please try again " +
                     "or contact the developer.");
             alert.show();
         }
+    }
+/*
+Global Exception Handler
+ */
+    private void setDefaultExceptionHandler() {
+        Thread.setDefaultUncaughtExceptionHandler( (thread, throwable) ->{
+            throwable.printStackTrace();
+            NotificationUtil.inputError("Error: "+throwable.getMessage());
+        });
+        /*
+        For current thread
+        Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> {
+            System.out.println("Handler caught exception: "+throwable.getMessage());
+        });
+         */
     }
 }

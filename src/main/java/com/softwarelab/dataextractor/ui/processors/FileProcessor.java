@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -53,7 +50,7 @@ public class FileProcessor{
 
         List<String> lines = Files.readAllLines(Paths.get(projectPath+"\\"+filePath));
         int indexOf;
-        Set<String> libs = new HashSet<>();
+        Map<String,Boolean> libs = new HashMap<>();
 
         FileModel fileModel = FileModel.builder()
                 .nameUrl(filePath)
@@ -73,7 +70,7 @@ public class FileProcessor{
                line = line.replace("import ","").trim();
                indexOf = line.indexOf(";");
                if(indexOf >=0 )
-                    libs.add(line.substring(0, indexOf));
+                    libs.put(line.substring(0, indexOf),true);
             }
         }
         fileModel.setLibraries(libs);

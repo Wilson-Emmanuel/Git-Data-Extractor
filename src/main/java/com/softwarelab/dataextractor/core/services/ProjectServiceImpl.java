@@ -9,7 +9,9 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Created by Wilson
@@ -38,5 +40,19 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public boolean existsByRemoteUrl(String remoteUrl) {
         return projectRepository.existsByRemoteUrl(remoteUrl);
+    }
+
+    @Override
+    public List<ProjectModel> getAllProjects() {
+        return projectRepository.findAll().stream().map(this::convertEntityToModel)
+                .collect(Collectors.toList());
+    }
+    private ProjectModel convertEntityToModel(ProjectEntity projectEntity){
+        return ProjectModel.builder()
+                .id(projectEntity.getId())
+                .name(projectEntity.getName())
+                .remoteUrl(projectEntity.getRemoteUrl())
+                .localPath(projectEntity.getLocalPath())
+                .build();
     }
 }

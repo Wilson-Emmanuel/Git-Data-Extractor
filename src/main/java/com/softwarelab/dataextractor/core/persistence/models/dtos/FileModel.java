@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -17,5 +18,5 @@ public class FileModel {
     private String nameUrl;
     private String packageName;
     @Builder.Default
-    private Set<String> libraries = Collections.emptySet();
+    private Map<String,Boolean> libraries = Collections.emptyMap();
 }
