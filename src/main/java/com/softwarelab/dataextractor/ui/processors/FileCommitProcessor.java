@@ -45,60 +45,78 @@ public class FileCommitProcessor {
         //all commit on a file sorted by date ascending (i.e. oldest commit first)
         List<String> lines = cmdProcessor.processCMD(CMD.ALL_CHANGES_MADE_ON_A_FILE.getCommand()+fileModel.getNameUrl(), projectPath);
 
+        //remove app packages from the file libraries
+        removeAppPackages(fileModel, packages);
+
         //Extract all commits in this file and the changes made.
         //changes are temporary stored in a Hashmap using commit ID as keys
         String commitInfo = null;
-        StringBuilder sb = new StringBuilder();
+        List<String> patch = new ArrayList<>();
         List<CommitModel> commitModels = new ArrayList<>();
 
         for(String line: lines){
-            if(fileModel.getLibraries().isEmpty())break;
+            if(fileModel.getLibraries().isEmpty())break;//later patches/commits do not have new libraries introduced
 
             if(line.startsWith("gjdea_firstinfo:")){//first line of every patch on the cmd query result
                 if(commitInfo != null){
-                    commitModels.add(getCommitModel(commitInfo,sb.toString(),packages,fileModel));
-                    sb = new StringBuilder();
+                    commitModels.add(getCommitModel(commitInfo, patch,fileModel));
+                    patch = new ArrayList<>();
                 }
                 commitInfo = line.trim();
             }else{
-                sb.append(line);
+                patch.add(line);
             }
         }
         //insert the last uninserted commit
         if(commitInfo != null && !fileModel.getLibraries().isEmpty())
-            commitModels.add(getCommitModel(commitInfo,sb.toString(),packages,fileModel));
+            commitModels.add(getCommitModel(commitInfo, patch,fileModel));
 
         return commitModels;
     }
-    private CommitModel getCommitModel(String commitInfo, String patch, Set<String> packages, FileModel fileModel){
+
+    private void removeAppPackages(FileModel fileModel, Set<String> packages) {
+        fileModel.getLibraries().keySet().removeIf(curLib -> packages.contains(curLib.substring(0, curLib.lastIndexOf("."))));
+    }
+
+    private CommitModel getCommitModel(String commitInfo, List<String> patch, FileModel fileModel){
         CommitModel commitModel = getModel(commitInfo);
         commitModel.setFileUrl(fileModel.getNameUrl());
-        commitModel.setLibraries(getLibraries(patch, packages, fileModel));
+        commitModel.setLibraries(getLibraries(patch, fileModel));
         return commitModel;
     }
 
-    private Set<String> getLibraries(String patch, Set<String> packages, FileModel fileModel) {
+    private Set<String> getLibraries(List<String> patch,  FileModel fileModel) {
+        List<String> validPatchLibs  = getValidPathLibs(patch);
         Set<String> libraries = new HashSet<>();
-        Iterator<String> iterator = fileModel.getLibraries().iterator();
+        if(validPatchLibs.isEmpty())
+            return libraries;
+
+
 
         //since patches are fetched chronologically starting from oldest, any commit patch that has any library,
         // then the library was added in the commit for the first time
-        while(iterator.hasNext()) {
-            String curLib = iterator.next();
-
-            //remove lib if project package
-            if(packages.contains(curLib.substring(0,curLib.lastIndexOf(".")))){
-                iterator.remove();
-                continue;
-            }
-
+        for(String curLib: validPatchLibs) {
             //if lib appears in the patch, then it was created by the author of this commit
-            if(patch.contains(curLib)){
+            if(fileModel.getLibraries().containsKey(curLib)){
                 libraries.add(curLib);
-                iterator.remove();
+                fileModel.getLibraries().remove(curLib);
             }
         }
         return libraries;
+    }
+
+    private List<String> getValidPathLibs(List<String> patch) {
+        List<String> valid = new ArrayList<>();
+        for(String line: patch){
+            if(line.contains("class ") || line.contains("public ") || line.contains("private ") || line.contains("protected") || line.contains("{"))
+                break;
+            int index = line.indexOf("import ");
+            if(index >= 0){
+                int last = line.indexOf(';',index+7);
+                valid.add(line.substring(index+7, last>=0?last:line.length()));
+            }
+        }
+        return valid;
     }
 
     private CommitModel getModel(String line) {
@@ -112,6 +130,7 @@ public class FileCommitProcessor {
                 .commitDate(commitInfo[3].trim())
                 .build();
     }
+
 
 
 }

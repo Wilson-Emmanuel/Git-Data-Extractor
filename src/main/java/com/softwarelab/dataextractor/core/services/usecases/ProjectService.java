@@ -3,6 +3,8 @@ package com.softwarelab.dataextractor.core.services.usecases;
 import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
 import com.softwarelab.dataextractor.core.persistence.models.dtos.ProjectModel;
 
+import java.util.List;
+
 /**
  * Created by Wilson
  * on Wed, 26/05/2021.
@@ -10,4 +12,5 @@ import com.softwarelab.dataextractor.core.persistence.models.dtos.ProjectModel;
 public interface ProjectService {
     ProjectEntity saveProject(ProjectModel model);
     boolean existsByRemoteUrl(String remoteUrl);
+    List<ProjectModel> getAllProjects();
 }

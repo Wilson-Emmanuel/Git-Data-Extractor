@@ -21,7 +21,7 @@ import java.util.*;
  */
 @Service(value = "taskProcessor")
 @Scope("prototype")
-public class TaskProcessor extends Task<Void> {
+public class ExtractionTask extends Task<Void> {
     private String remoteUrl;
     private String basePath;
 
@@ -94,7 +94,7 @@ public class TaskProcessor extends Task<Void> {
         updateMessage("Removing local project files");
         File localProjectFolder = new File(project.getLocalPath());
         if(localProjectFolder.exists()){
-            deleteDir(localProjectFolder);
+           // deleteDir(localProjectFolder);
         }
         return null;
     }
@@ -130,7 +130,7 @@ public class TaskProcessor extends Task<Void> {
     protected void failed() {
         super.failed();
         Throwable ex = this.getException();
-        ex.printStackTrace();
+        //ex.printStackTrace();
         this.updateMessage(String.format("Process Incomplete: %s \n",ex.getMessage()));
         updateProgress(0,0);
     }

@@ -9,7 +9,7 @@ import java.util.Optional;
  * Created by Wilson
  * on Tue, 25/05/2021.
  */
-public interface ProjectRepository extends JpaRepository<ProjectEntity,Integer> {
+public interface ProjectRepository extends JpaRepository<ProjectEntity,Long> {
     boolean existsByRemoteUrl(String remoteUrl);
 
     Optional<ProjectEntity> findByRemoteUrl(String remoteUrl);

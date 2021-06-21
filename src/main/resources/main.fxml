@@ -16,14 +16,11 @@
          </font>
       </Label>
       <TextField fx:id="remoteUrlTxt" layoutX="187.0" layoutY="65.0" prefHeight="34.0" prefWidth="525.0" />
-      <TextArea fx:id="progressMessage" layoutX="92.0" layoutY="234.0" prefHeight="404.0" prefWidth="624.0" AnchorPane.bottomAnchor="0.0" />
+      <TextArea fx:id="progressMessage" layoutX="152.0" layoutY="231.0" prefHeight="404.0" prefWidth="624.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" />
       <Button fx:id="extractBtn" layoutX="571.0" layoutY="110.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="141.0" text="Extract Data" />
-      <StackPane fx:id="progressPane" layoutX="92.0" layoutY="214.0" prefHeight="34.0" prefWidth="624.0" />
+      <StackPane fx:id="progressPane" layoutX="166.0" layoutY="214.0" prefHeight="34.0" prefWidth="624.0" AnchorPane.rightAnchor="0.0" />
       <Button fx:id="cancelBtn" layoutX="187.0" layoutY="110.0" mnemonicParsing="false" prefHeight="34.0" prefWidth="141.0" styleClass="cancel" text="Cancel" />
-      <Button fx:id="clearMessageBtn" layoutX="726.0" layoutY="613.0" mnemonicParsing="false" text="Clear">
-         <font>
-            <Font name="System Italic" size="7.0" />
-         </font>
-      </Button>
+      <Button fx:id="clearMessageBtn" layoutX="30.0" layoutY="257.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="117.0" text="Clear" />
+      <Button fx:id="exportBtn" layoutX="30.0" layoutY="304.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="117.0" text="Export" />
    </children>
 </AnchorPane>
