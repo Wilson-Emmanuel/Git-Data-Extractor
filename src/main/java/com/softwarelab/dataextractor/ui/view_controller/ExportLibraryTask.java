@@ -54,13 +54,13 @@ public class ExportLibraryTask extends Task<Void> {
         int total = Long.valueOf(commits.getTotalItems()).intValue(), current = 1;
 
         while(!commits.getItems().isEmpty()){
-
             for(CommitModel model: commits.getItems()){
                 updateMessage("Processing... ("+((current/total)*100)+"%)");
-
                 for (String cur : model.getLibraries()) {
                     Row row = byLibs.createRow(current++);
-                    row.createCell(0).setCellValue(model.getDeveloperName());
+//                    row.createCell(0).setCellValue(model.getDeveloperName());
+                    String email = model.getDeveloperEmail();
+                    row.createCell(0).setCellValue(email == null|| email.isEmpty()?model.getDeveloperName():email);
                     row.createCell(1).setCellValue(cur);
                     row.createCell(2).setCellValue(model.getCommitDate());
                 }
