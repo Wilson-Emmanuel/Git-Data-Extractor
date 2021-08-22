@@ -1,8 +1,11 @@
 package com.softwarelab.dataextractor.core.utilities;
 
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
+import javafx.stage.Window;
 import javafx.util.Duration;
 import org.controlsfx.control.Notifications;
 
@@ -40,5 +43,13 @@ public class NotificationUtil {
                 .hideAfter(Duration.seconds(3))
                 .position(Pos.BOTTOM_RIGHT)
                 .showInformation();
+    }
+    public static void showAlert(Alert.AlertType type, String title, String content){
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setContentText(content);
+        //alert.initModality(Modality.WINDOW_MODAL);
+        //alert.initOwner(owner);
+        alert.show();
     }
 }

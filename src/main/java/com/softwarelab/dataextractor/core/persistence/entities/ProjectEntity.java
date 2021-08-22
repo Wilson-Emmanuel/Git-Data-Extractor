@@ -1,10 +1,12 @@
 package com.softwarelab.dataextractor.core.persistence.entities;
 
+import com.softwarelab.dataextractor.core.persistence.entities.AbstractBaseEntity;
 import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import java.time.Instant;
 
 /**
  * Created by Wilson
@@ -17,7 +19,7 @@ import javax.persistence.Table;
 @Builder
 @Entity
 @Table(name = "projects")
-public class ProjectEntity extends AbstractBaseEntity<Long>{
+public class ProjectEntity extends AbstractBaseEntity<Long> {
     @Column
     private String name;
 

@@ -1,9 +1,10 @@
 package com.softwarelab.dataextractor.core.services;
 
 import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
-import com.softwarelab.dataextractor.core.persistence.models.dtos.ProjectModel;
+import com.softwarelab.dataextractor.core.persistence.models.ProjectObject;
 import com.softwarelab.dataextractor.core.persistence.repositories.ProjectRepository;
 import com.softwarelab.dataextractor.core.services.usecases.ProjectService;
+import com.softwarelab.dataextractor.core.services.processors.CMDProcessor;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -23,18 +24,21 @@ import java.util.stream.Collectors;
 public class ProjectServiceImpl implements ProjectService {
 
     ProjectRepository projectRepository;
+    CMDProcessor cmdProcessor;
+
     @Override
-    public ProjectEntity saveProject(ProjectModel model) {
-        Optional<ProjectEntity> optional = projectRepository.findByRemoteUrl(model.getRemoteUrl());
+    public ProjectObject saveProject(ProjectObject model) {
+        Optional<ProjectEntity> optional = projectRepository.findByRemoteUrl(model.getRemoteURL());
         if(optional.isPresent())
-            return optional.get();
+            return convertEntityToModel(optional.get());
 
         ProjectEntity projectEntity = ProjectEntity.builder()
                 .localPath(model.getLocalPath())
                 .name(model.getName())
-                .remoteUrl(model.getRemoteUrl())
+                .remoteUrl(model.getRemoteURL())
                 .build();
-        return projectRepository.save(projectEntity);
+        projectEntity = projectRepository.save(projectEntity);
+        return this.convertEntityToModel(projectEntity);
     }
 
     @Override
@@ -42,16 +46,32 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.existsByRemoteUrl(remoteUrl);
     }
 
+
     @Override
-    public List<ProjectModel> getAllProjects() {
+    public boolean existsByLocalPath(String localPath) {
+        return projectRepository.existsByLocalPath(localPath);
+    }
+
+    @Override
+    public boolean isLocalPathValid(String localPath) {
+        return cmdProcessor.isValidDir(localPath);
+    }
+
+    @Override
+    public boolean isValidRemoteURL(String remoteURL) {
+        return false;
+    }
+
+    @Override
+    public List<ProjectObject> getAllProjects() {
         return projectRepository.findAll().stream().map(this::convertEntityToModel)
                 .collect(Collectors.toList());
     }
-    private ProjectModel convertEntityToModel(ProjectEntity projectEntity){
-        return ProjectModel.builder()
+    private ProjectObject convertEntityToModel(ProjectEntity projectEntity){
+        return ProjectObject.builder()
                 .id(projectEntity.getId())
                 .name(projectEntity.getName())
-                .remoteUrl(projectEntity.getRemoteUrl())
+                .remoteURL(projectEntity.getRemoteUrl())
                 .localPath(projectEntity.getLocalPath())
                 .build();
     }

@@ -11,6 +11,7 @@ import java.util.Optional;
  */
 public interface ProjectRepository extends JpaRepository<ProjectEntity,Long> {
     boolean existsByRemoteUrl(String remoteUrl);
+    boolean existsByLocalPath(String localPath);
 
     Optional<ProjectEntity> findByRemoteUrl(String remoteUrl);
 }

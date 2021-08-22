@@ -1,9 +1,9 @@
 package com.softwarelab.dataextractor.ui.view_controller;
 
 import com.softwarelab.dataextractor.core.persistence.models.PagedData;
-import com.softwarelab.dataextractor.core.persistence.models.dtos.CommitModel;
-import com.softwarelab.dataextractor.core.persistence.models.dtos.ProjectModel;
-import com.softwarelab.dataextractor.core.services.usecases.CommitService;
+import com.softwarelab.dataextractor.core.persistence.models.dtos.CommitModel1;
+import com.softwarelab.dataextractor.core.persistence.models.dtos.ProjectModel1;
+import com.softwarelab.dataextractor.core.services.usecases.CommitService1;
 import javafx.concurrent.Task;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -24,9 +24,9 @@ import java.util.*;
 public class ExportLibraryTask extends Task<Void> {
 
     @Autowired
-    private CommitService commitService;
+    private CommitService1 commitService1;
 
-    private ProjectModel projectModel;
+    private ProjectModel1 projectModel1;
     private String exportLocation;
     private  boolean byDev;
 
@@ -50,11 +50,11 @@ public class ExportLibraryTask extends Task<Void> {
         setByLibHeaderRow(workbook,byLibs);
 
         int size = 100, page = 0;
-        PagedData<CommitModel> commits = commitService.getCommits(projectModel.getId(),page,size);
+        PagedData<CommitModel1> commits = commitService1.getCommits(projectModel1.getId(),page,size);
         int total = Long.valueOf(commits.getTotalItems()).intValue(), current = 1;
 
         while(!commits.getItems().isEmpty()){
-            for(CommitModel model: commits.getItems()){
+            for(CommitModel1 model: commits.getItems()){
                 updateMessage("Processing... ("+((current/total)*100)+"%)");
                 for (String cur : model.getLibraries()) {
                     Row row = byLibs.createRow(current++);
@@ -66,7 +66,7 @@ public class ExportLibraryTask extends Task<Void> {
                 }
 
             }
-            commits = commitService.getCommits(projectModel.getId(),page++,size);
+            commits = commitService1.getCommits(projectModel1.getId(),page++,size);
         }
         // Resize all columns to fit the content size
         for (int i = 0; i < columns.length; i++) {
@@ -74,7 +74,7 @@ public class ExportLibraryTask extends Task<Void> {
         }
 
         //generating the excel file
-        FileOutputStream fileOut = new FileOutputStream(exportLocation+"/"+projectModel.getName()+"_libs.xlsx");
+        FileOutputStream fileOut = new FileOutputStream(exportLocation+"/"+ projectModel1.getName()+"_libs.xlsx");
         workbook.write(fileOut);
         fileOut.close();
     }
@@ -84,7 +84,7 @@ public class ExportLibraryTask extends Task<Void> {
         CellStyle headerCellStyle = setHeaderFont(workbook);
 
         //TODO: empty collection
-        List<String> devs = commitService.getDevelopers(projectModel.getId());
+        List<String> devs = commitService1.getDevelopers(projectModel1.getId());
 
         Sheet byDevelopers = workbook.createSheet("Developers");
         Row headerRow = byDevelopers.createRow(0);
@@ -98,7 +98,7 @@ public class ExportLibraryTask extends Task<Void> {
         int current = 1;
         for(String devName : devs){
             updateMessage("Processing... ("+((current/total)*100)+"%)");
-            Optional<String> libs = commitService.getDeveloperLibraries(devName,projectModel.getId());
+            Optional<String> libs = commitService1.getDeveloperLibraries(devName, projectModel1.getId());
             if(libs.isEmpty())
                 continue;
 
@@ -112,14 +112,14 @@ public class ExportLibraryTask extends Task<Void> {
         }
 
         //generating the excel file
-        FileOutputStream fileOut = new FileOutputStream(exportLocation+"/"+projectModel.getName()+"_devs.xlsx");
+        FileOutputStream fileOut = new FileOutputStream(exportLocation+"/"+ projectModel1.getName()+"_devs.xlsx");
         workbook.write(fileOut);
         fileOut.close();
 
     }
 
-    public void setProject(ProjectModel model){
-        this.projectModel = model;
+    public void setProject(ProjectModel1 model){
+        this.projectModel1 = model;
     }
     public void setExportLocation(String loc){
         this.exportLocation = loc;

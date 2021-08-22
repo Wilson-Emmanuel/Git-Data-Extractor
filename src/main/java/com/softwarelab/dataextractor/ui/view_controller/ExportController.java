@@ -1,6 +1,6 @@
 package com.softwarelab.dataextractor.ui.view_controller;
 
-import com.softwarelab.dataextractor.core.persistence.models.dtos.ProjectModel;
+import com.softwarelab.dataextractor.core.persistence.models.dtos.ProjectModel1;
 import com.softwarelab.dataextractor.core.services.usecases.ProjectService;
 import com.softwarelab.dataextractor.core.utilities.GeneralUtil;
 import javafx.collections.FXCollections;
@@ -44,7 +44,7 @@ import java.util.ResourceBundle;
 public class ExportController implements Initializable {
 
     @FXML
-    private ComboBox<ProjectModel> projectCmb;
+    private ComboBox<ProjectModel1> projectCmb;
 
     @FXML
     private ComboBox<String> exportOptionCmb;
@@ -63,7 +63,7 @@ public class ExportController implements Initializable {
     @Autowired
     private ProjectService projectService;
 
-    private  ObservableList<ProjectModel> projects = FXCollections.emptyObservableList();
+    private  ObservableList<ProjectModel1> projects = FXCollections.emptyObservableList();
     private ExportLibraryTask exportLibraryTask;
 
     private String defaultBtnName;
@@ -71,7 +71,7 @@ public class ExportController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        projects = FXCollections.observableArrayList(projectService.getAllProjects());
+        projects = null;//FXCollections.observableArrayList(projectService.getAllProjects());
         defaultBtnName = exportBtn.getText();
 
         projectCmb.setPromptText("Select Project");
@@ -130,10 +130,10 @@ public class ExportController implements Initializable {
     }
     private void setUpComboFactory() {
 
-        projectCmb.setConverter(new StringConverter<ProjectModel>() {
-            private Map<String,ProjectModel> map = new HashMap<>();
+        projectCmb.setConverter(new StringConverter<ProjectModel1>() {
+            private Map<String, ProjectModel1> map = new HashMap<>();
             @Override
-            public String toString(ProjectModel model) {
+            public String toString(ProjectModel1 model) {
                 if(model != null){
                     map.put(model.getName(),model);
                     return model.getName();
@@ -142,7 +142,7 @@ public class ExportController implements Initializable {
             }
 
             @Override
-            public ProjectModel fromString(String s) {
+            public ProjectModel1 fromString(String s) {
                 if(!s.isBlank()){
                     return map.get(s);
                 }
@@ -153,11 +153,11 @@ public class ExportController implements Initializable {
 
         projectCmb.setCellFactory(new Callback<>() {
             @Override
-            public ListCell<ProjectModel> call(ListView<ProjectModel> projectModelListView) {
+            public ListCell<ProjectModel1> call(ListView<ProjectModel1> projectModelListView) {
 
-                return new ListCell<ProjectModel>() {
+                return new ListCell<ProjectModel1>() {
                     @Override
-                    protected void updateItem(ProjectModel model, boolean empty) {
+                    protected void updateItem(ProjectModel1 model, boolean empty) {
                         super.updateItem(model, empty);
                         if (model == null || empty) {
                             setText(" ");

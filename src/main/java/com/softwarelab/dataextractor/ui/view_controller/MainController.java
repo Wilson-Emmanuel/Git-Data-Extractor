@@ -41,7 +41,7 @@ public class MainController implements Initializable {
     @FXML
     private Button exportBtn;
 
-    @Value("classpath:/export.fxml")
+    @Value("classpath:/export1.fxml")
     private Resource exportResource;
 
     private ProgressBar progressBar;

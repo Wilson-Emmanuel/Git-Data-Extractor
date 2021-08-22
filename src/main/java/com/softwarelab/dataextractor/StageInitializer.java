@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class StageInitializer implements ApplicationListener<GitJavaDataExtractorUIStarter.StageReadyEvent> {
 
-    @Value("classpath:/main.fxml")
+    @Value("classpath:/mainview.fxml")
     private Resource mainResource;
 
     @Value("${application.stage.title}")
@@ -32,7 +32,7 @@ public class StageInitializer implements ApplicationListener<GitJavaDataExtracto
     private ApplicationContext applicationContext;
 
     @Autowired
-    private MainController mainController;
+    private MainView mainView;
 
     private Stage mainStage;
     @Override
@@ -41,7 +41,7 @@ public class StageInitializer implements ApplicationListener<GitJavaDataExtracto
         setDefaultExceptionHandler();
         try{
            FXMLLoader fxmlLoader = new FXMLLoader(mainResource.getURL());
-            fxmlLoader.setController(mainController);
+            fxmlLoader.setController(mainView);
             Parent parent = fxmlLoader.load();
             parent.getStyleClass().add("mainbg");
 
@@ -62,12 +62,11 @@ public class StageInitializer implements ApplicationListener<GitJavaDataExtracto
             mainStage.centerOnScreen();
             mainStage.show();
         }catch (Exception ex){
-            //ex.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Application Error");
-            alert.setContentText("An error occurred while starting the application. Please try again " +
-                    "or contact the developer.");
-            alert.show();
+            ex.printStackTrace();
+            String title ="Application Error";
+            String content = "An error occurred while starting the application. Please try again " +
+                    "or contact the developer.";
+            NotificationUtil.showAlert(Alert.AlertType.ERROR,title,content);
         }
     }
 /*

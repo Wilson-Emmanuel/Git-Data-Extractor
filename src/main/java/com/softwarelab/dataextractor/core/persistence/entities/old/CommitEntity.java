@@ -1,7 +1,8 @@
-package com.softwarelab.dataextractor.core.persistence.entities;
+package com.softwarelab.dataextractor.core.persistence.entities.old;
 
+import com.softwarelab.dataextractor.core.persistence.entities.AbstractBaseEntity;
+import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
 import lombok.*;
-import org.checkerframework.checker.units.qual.C;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -17,7 +18,7 @@ import java.time.Instant;
 @Builder
 @Entity
 @Table(name = "commits")
-public class CommitEntity extends AbstractBaseEntity<Long>{
+public class CommitEntity extends AbstractBaseEntity<Long> {
     @Column
     private String commitId;
 

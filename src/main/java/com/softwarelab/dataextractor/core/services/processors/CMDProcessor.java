@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.ui.processors;
+package com.softwarelab.dataextractor.core.services.processors;
 
 import com.google.common.io.CharStreams;
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;

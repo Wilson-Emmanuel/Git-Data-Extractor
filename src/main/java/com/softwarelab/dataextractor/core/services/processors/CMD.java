@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.ui.processors;
+package com.softwarelab.dataextractor.core.services.processors;
 
 /**
  * Created by Wilson
