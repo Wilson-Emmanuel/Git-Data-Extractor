@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="533.0" prefWidth="680.0" styleClass="mainbg" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TextField fx:id="urlPathTxt" layoutX="39.0" layoutY="135.0" prefHeight="30.0" prefWidth="367.0" />
+      <Button fx:id="browseBtn" layoutX="406.0" layoutY="135.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="199.0" text="Browse Categorized File" />
+      <Button fx:id="importBtn" layoutX="406.0" layoutY="317.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="199.0" text="Import" />
+      <Label layoutX="39.0" layoutY="196.0" prefHeight="20.0" prefWidth="62.0" text="Project" textFill="#000000cf">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="projectCmb" layoutX="101.0" layoutY="194.0" prefHeight="25.0" prefWidth="500.0" promptText="Select Project" />
+      <Label layoutX="39.0" layoutY="265.0" prefHeight="20.0" prefWidth="62.0" text="Option" textFill="#000000cf">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Label>
+      <ComboBox fx:id="optionCmb" layoutX="101.0" layoutY="263.0" prefHeight="25.0" prefWidth="500.0" promptText="Select Option" />
+      <Label fx:id="progressMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="252.0" layoutY="466.0" prefHeight="17.0" prefWidth="167.0" />
+      <Label layoutX="185.0" layoutY="43.0" text="Import Categorized Data">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <ProgressBar fx:id="progressBar" layoutX="236.0" layoutY="428.0" prefWidth="200.0" progress="0.0" />
+   </children>
+</AnchorPane>

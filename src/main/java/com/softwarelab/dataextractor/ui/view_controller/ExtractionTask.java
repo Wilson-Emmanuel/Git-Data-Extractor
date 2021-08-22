@@ -2,11 +2,11 @@ package com.softwarelab.dataextractor.ui.view_controller;
 
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
-import com.softwarelab.dataextractor.core.persistence.models.dtos.FileModel;
-import com.softwarelab.dataextractor.core.services.usecases.CommitService;
-import com.softwarelab.dataextractor.ui.processors.FileCommitProcessor;
-import com.softwarelab.dataextractor.ui.processors.FileProcessor;
-import com.softwarelab.dataextractor.ui.processors.ProjectDownloader;
+import com.softwarelab.dataextractor.core.persistence.models.dtos.FileModel1;
+import com.softwarelab.dataextractor.core.services.usecases.CommitService1;
+import com.softwarelab.dataextractor.core.services.processors.FileCommitProcessor;
+import com.softwarelab.dataextractor.core.services.processors.FileProcessor;
+import com.softwarelab.dataextractor.core.services.processors.ProjectDownloader;
 import javafx.concurrent.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -32,7 +32,7 @@ public class ExtractionTask extends Task<Void> {
     @Autowired
     private FileCommitProcessor fileCommitProcessor;
     @Autowired
-    private CommitService commitService;
+    private CommitService1 commitService1;
 
 
     @Override
@@ -44,7 +44,7 @@ public class ExtractionTask extends Task<Void> {
         ProjectEntity project = null;
         if (!this.isCancelled()) {
             updateMessage("Downloading project from "+remoteUrl+"...");
-            project = projectDownloader.downloadProject(basePath, remoteUrl);
+            //project = projectDownloader.downloadProject(basePath, remoteUrl);
             if (project == null)
                 throw new CMDProcessException("Project download unsuccessful.");
 
@@ -53,7 +53,7 @@ public class ExtractionTask extends Task<Void> {
         }
         //extracting files and libs
         Objects.requireNonNull(project);
-        List<FileModel> fileModels = new ArrayList<>();
+        List<FileModel1> fileModel1s = new ArrayList<>();
         Set<String> packages = new HashSet<>();
 
         if(!this.isCancelled()){
@@ -62,31 +62,31 @@ public class ExtractionTask extends Task<Void> {
             updateProgress(1.0,1.0);
             updateProgress(0,0);
             updateMessage("Extracting all Libraries");
-            FileModel fileModel;
+            FileModel1 fileModel1;
             for(int i=0; i<files.size(); i++){
                 String fileName = files.get(i);
                 updateProgress(i+1,files.size());
                 updateMessage("Extracting libraries from "+fileName);
 
-                fileModel = fileProcessor.extractFileLibraries(fileName,project.getLocalPath());
-                if(!fileModel.getLibraries().isEmpty()){
-                    packages.add(fileModel.getPackageName());
-                    fileModels.add(fileModel);
+                fileModel1 = fileProcessor.extractFileLibraries(fileName,project.getLocalPath());
+                if(!fileModel1.getLibraries().isEmpty()){
+                    packages.add(fileModel1.getPackageName());
+                    fileModel1s.add(fileModel1);
                 }
             }
             files.clear();
         }
 
         //extracting file commits
-        //List<CommitModel> commitModels = new ArrayList<>();
+        //List<CommitModel1> commitModels = new ArrayList<>();
         if(!this.isCancelled()){
             updateMessage("Analyzing all commits from Java files.");
             updateProgress(0,0);
-            for(int i=0; i<fileModels.size(); i++){
-                String fileName = fileModels.get(i).getNameUrl();
-                updateProgress(i+1,fileModels.size());
+            for(int i = 0; i< fileModel1s.size(); i++){
+                String fileName = fileModel1s.get(i).getNameUrl();
+                updateProgress(i+1, fileModel1s.size());
                 updateMessage("Analyzing commit patches from "+fileName);
-                commitService.saveCommitAll(fileCommitProcessor.extractFileCommits(fileModels.get(i),project.getLocalPath(),packages), project );
+                commitService1.saveCommitAll(fileCommitProcessor.extractFileCommits(fileModel1s.get(i),project.getLocalPath(),packages), project );
             }
         }
 

@@ -1,7 +1,6 @@
 package com.softwarelab.dataextractor.core.services.usecases;
 
-import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
-import com.softwarelab.dataextractor.core.persistence.models.dtos.ProjectModel;
+import com.softwarelab.dataextractor.core.persistence.models.ProjectObject;
 
 import java.util.List;
 
@@ -10,7 +9,10 @@ import java.util.List;
  * on Wed, 26/05/2021.
  */
 public interface ProjectService {
-    ProjectEntity saveProject(ProjectModel model);
+    ProjectObject saveProject(ProjectObject model);
     boolean existsByRemoteUrl(String remoteUrl);
-    List<ProjectModel> getAllProjects();
+    boolean existsByLocalPath(String localPath);
+    boolean isLocalPathValid(String localPath);
+    boolean isValidRemoteURL(String remoteURL);
+    List<ProjectObject> getAllProjects();
 }

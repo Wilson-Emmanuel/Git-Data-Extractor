@@ -1,7 +1,7 @@
-package com.softwarelab.dataextractor.ui.processors;
+package com.softwarelab.dataextractor.core.services.processors;
 
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
-import com.softwarelab.dataextractor.core.persistence.models.dtos.FileModel;
+import com.softwarelab.dataextractor.core.persistence.models.dtos.FileModel1;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
@@ -45,14 +45,14 @@ public class FileProcessor{
                 .collect(Collectors.toList());
     }
 
-    public FileModel extractFileLibraries(String filePath, String projectPath) throws IOException {
+    public FileModel1 extractFileLibraries(String filePath, String projectPath) throws IOException {
         List<String> libraries = new ArrayList<>();
 
         List<String> lines = Files.readAllLines(Paths.get(projectPath+"\\"+filePath));
         int indexOf;
         Map<String,Boolean> libs = new HashMap<>();
 
-        FileModel fileModel = FileModel.builder()
+        FileModel1 fileModel1 = FileModel1.builder()
                 .nameUrl(filePath)
                 .build();
 
@@ -62,7 +62,7 @@ public class FileProcessor{
                 break;
 
             if(line.contains("package ")){
-                fileModel.setPackageName(extractPackageName(line));
+                fileModel1.setPackageName(extractPackageName(line));
                 continue;
             }
 
@@ -73,8 +73,8 @@ public class FileProcessor{
                     libs.put(line.substring(0, indexOf),true);
             }
         }
-        fileModel.setLibraries(libs);
-        return fileModel;
+        fileModel1.setLibraries(libs);
+        return fileModel1;
     }
 
     private String extractPackageName(String packageName){

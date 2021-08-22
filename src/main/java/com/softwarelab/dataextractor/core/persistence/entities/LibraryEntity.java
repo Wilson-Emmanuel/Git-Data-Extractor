@@ -2,11 +2,13 @@ package com.softwarelab.dataextractor.core.persistence.entities;
 
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 /**
  * Created by Wilson
- * on Tue, 25/05/2021.
+ * on Sun, 15/08/2021.
  */
 @Setter
 @Getter
@@ -15,11 +17,15 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "libraries")
-public class LibraryEntity extends AbstractBaseEntity<Long>{
+public class LibraryEntity extends AbstractBaseEntity<Long> {
+    //this is used for all projects
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = false)
-    private CommitEntity commit;
+    @Column(nullable = false, unique = true)
+    private String name;
 
-    @Column(nullable = false)
-    private String library;
+    @Column
+    private String category;
+
+    @Column
+    private String provider;
 }
