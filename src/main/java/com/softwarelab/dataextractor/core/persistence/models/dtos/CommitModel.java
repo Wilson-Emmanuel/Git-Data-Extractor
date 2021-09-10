@@ -14,9 +14,12 @@ import java.util.Set;
 @Builder
 public class CommitModel {
     private String commitId;
-    private String developerName;
-    private String developerEmail;
+    private String commiterName;
+    private String commiterEmail;
+    private String authorName;
+    private String authorEmail;
     private String commitDate;
+    private String authorDate;
     private String fileUrl;
     @Builder.Default
     private Set<String> libraries = new HashSet<>();

@@ -19,7 +19,7 @@ public class ErrorViewModel {
 
     public ErrorViewModel(){
         error.addListener((observableValue, s, t1) -> {
-            Platform.runLater(() -> NotificationUtil.showAlert(Alert.AlertType.ERROR,"Error",s));
+            Platform.runLater(() -> NotificationUtil.showAlert(Alert.AlertType.ERROR,"Error",t1));
         });
     }
     public void setError(String errorMessage){

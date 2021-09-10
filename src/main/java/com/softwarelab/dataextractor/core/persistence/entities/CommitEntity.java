@@ -1,4 +1,4 @@
-package com.softwarelab.dataextractor.core.persistence.entities.old;
+package com.softwarelab.dataextractor.core.persistence.entities;
 
 import com.softwarelab.dataextractor.core.persistence.entities.AbstractBaseEntity;
 import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
@@ -19,21 +19,25 @@ import java.time.Instant;
 @Entity
 @Table(name = "commits")
 public class CommitEntity extends AbstractBaseEntity<Long> {
-    @Column
+    @Column(unique = true,nullable = false)
     private String commitId;
 
     @Column
-    private String developerName;
+    private String authorName;
 
     @Column
-    private String developerEmail;
+    private String authorEmail;
 
     @Column
     private Instant commitDate;
 
     @Column
-    private String fileUrl;
+    private Instant authorDate;
 
-    @ManyToOne(optional = false,fetch = FetchType.LAZY)
-    private ProjectEntity project;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private ClassFileEntity classFile;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private CommiterEntity commiter;
+
 }

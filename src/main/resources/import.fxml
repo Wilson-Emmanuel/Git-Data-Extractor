@@ -27,7 +27,7 @@
       </Label>
       <ComboBox fx:id="optionCmb" layoutX="101.0" layoutY="263.0" prefHeight="25.0" prefWidth="500.0" promptText="Select Option" />
       <Label fx:id="progressMessage" alignment="CENTER" contentDisplay="CENTER" layoutX="252.0" layoutY="466.0" prefHeight="17.0" prefWidth="167.0" />
-      <Label layoutX="185.0" layoutY="43.0" text="Import Categorized Data">
+      <Label layoutX="185.0" layoutY="43.0" text="Import Classified Data">
          <font>
             <Font name="System Bold" size="20.0" />
          </font>

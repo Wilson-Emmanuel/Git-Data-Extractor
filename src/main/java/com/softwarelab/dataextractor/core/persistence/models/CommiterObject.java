@@ -5,13 +5,14 @@ import lombok.Data;
 
 /**
  * Created by Wilson
- * on Sun, 18/04/2021.
+ * on Sun, 15/08/2021.
  */
 @Data
 @Builder
-public class CommitModel {
+public class CommiterObject {
     private Long id;
-    private String commitId;
-    private DeveloperModel developer;
-    private String commitDate;
+    private String name;
+    private String email;
+    private String mappedName;
+    private ProjectObject project;
 }

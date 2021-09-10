@@ -2,6 +2,7 @@ package com.softwarelab.dataextractor.core.services.processors;
 
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
 import com.softwarelab.dataextractor.core.persistence.models.ProjectObject;
+import com.softwarelab.dataextractor.core.services.usecases.ProjectService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -9,13 +10,15 @@ import java.io.IOException;
 @Service
 public class ProjectDownloader {
     private CMDProcessor cmdProcessor;
+    ProjectService projectService;
 
 
-    public ProjectDownloader(CMDProcessor cmdProcessor) {
+    public ProjectDownloader(CMDProcessor cmdProcessor, ProjectService projectService) {
         this.cmdProcessor = cmdProcessor;
+        this.projectService = projectService;
     }
 
-    public ProjectObject downloadProject(String basePath, String remoteGit) throws CMDProcessException, IOException, InterruptedException {
+    public ProjectObject downloadAndSaveProject(String basePath, String remoteGit) throws CMDProcessException, IOException, InterruptedException {
         if(!remoteGit.endsWith(".git"))
             throw new CMDProcessException("invalid remote project url");
 
@@ -32,12 +35,12 @@ public class ProjectDownloader {
 
         //return project if successful
 
-        return ProjectObject.builder()
+        ProjectObject projectObject = ProjectObject.builder()
                 .localPath(projectPath)
                 .remoteURL(remoteGit)
                 .name(projectName)
                 .build();
-
+        return projectService.saveProject(projectObject);
     }
 
 }

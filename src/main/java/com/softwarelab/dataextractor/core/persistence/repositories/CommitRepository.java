@@ -1,5 +1,6 @@
 package com.softwarelab.dataextractor.core.persistence.repositories;
 
+import com.softwarelab.dataextractor.core.persistence.entities.ClassFileEntity;
 import com.softwarelab.dataextractor.core.persistence.entities.CommitEntity;
 import com.softwarelab.dataextractor.core.persistence.entities.ProjectEntity;
 import org.springframework.data.domain.Page;
@@ -21,11 +22,6 @@ public interface CommitRepository extends JpaRepository<CommitEntity,Long> {
 
     Optional<CommitEntity> findByCommitId(String commitId);
     boolean existsByCommitId(String commitId);
-    boolean existsByCommitIdAndProjectAndDeveloperName(String commitId, ProjectEntity project, String developerName);
-    Page<CommitEntity> findAllByProject(ProjectEntity project, Pageable pageable);
-
-    @Query("SELECT DISTINCT c.developerName  FROM CommitEntity c WHERE c.project = :project")
-    List<String> getDistinctDevelopers(@Param("project") ProjectEntity project);
-
-    List<CommitEntity> findAllByDeveloperNameAndProject(String developerName, ProjectEntity project);
+    List<CommitEntity> findAllByClassFile(ClassFileEntity classFile);
+    Page<CommitEntity> findAllByClassFile_Project(ProjectEntity project, Pageable pageable);
 }

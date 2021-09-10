@@ -11,12 +11,17 @@ import java.util.stream.Collectors;
  * on Thu, 19/08/2021.
  */
 public enum OptionEnum {
-    PROJECT_LIBRARIES("Project Libraries","export"),
-    PROJECT_UNIQUE_LIBRARIES("Project Unique Libraries","export"),
-    PROJECT_UNIQUE_CONTRIBUTORS("Project Unique Contributors","export"),
-    ALL_PROJECT_UNIQUE_LIBRARIES("All Project Unique Libraries","export"),
-    IMPORT_LIBRARIES("Libraries","import"),
-    IMPORT_PROJECT_DEVELOPERS("Project Developers","import");
+    ALL_LIBRARIES("All Libraries","export",true),
+    PROJECT_LIBRARIES("Project Libraries","export",false),
+    PROJECT_UNIQUE_LIBRARIES("Project Unique Libraries","export",false),
+    PROJECT_UNCLASSIFIED_UNIQUE_LIBRARIES("Project Unclassified Unique Libraries","export",false),
+    //PROJECT_UNIQUE_CONTRIBUTORS("Project Contributors","export",false),
+    //ALL_PROJECT_UNIQUE_CONTRIBUTORS("All Contributors","export",true),
+    ALL_UNIQUE_LIBRARIES("All Unique Libraries","export",true),
+    ALL_UNCLASSIFIED_UNIQUE_LIBRARIES("All Unclassified Unique Libraries","export",true),
+
+    IMPORT_LIBRARIES("Libraries","import",true);
+    //IMPORT_PROJECT_DEVELOPERS("Project Developers","import",false);
 
     private static final Map<String,OptionEnum> INSTANCES = new HashMap<>();
     static {
@@ -26,9 +31,14 @@ public enum OptionEnum {
 
     private final String option;
     private final String type;
-    OptionEnum(String option,String type){
+    private final boolean allProject;
+    OptionEnum(String option,String type, boolean allProject){
         this.option =option;
         this.type = type;
+        this.allProject  = allProject;
+    }
+    public boolean isAllProject(){
+        return allProject;
     }
     public String getOption(){
         return option;

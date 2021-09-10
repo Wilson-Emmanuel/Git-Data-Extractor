@@ -1,15 +1,22 @@
 package com.softwarelab.dataextractor.mvvm.imports;
 
 import com.softwarelab.dataextractor.core.persistence.models.ProjectObject;
+import com.softwarelab.dataextractor.core.utilities.GeneralUtil;
 import com.softwarelab.dataextractor.core.utilities.converters.CustomStringConverters;
 import com.softwarelab.dataextractor.core.utilities.factories.ComboFactories;
 import com.softwarelab.dataextractor.mvvm.models.OptionEnum;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Window;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -59,7 +66,7 @@ public class ImportView implements Initializable {
 
         //Disable project when export option is IMPORT_LIBRARIES( which exports all unique libraries in the system)
         optionCmb.valueProperty().addListener((observableValue, s, t1) -> {
-            projectCmb.setDisable(OptionEnum.getOptionEnum(optionCmb.getSelectionModel().getSelectedItem()) == OptionEnum.IMPORT_LIBRARIES);
+            projectCmb.setDisable(OptionEnum.getOptionEnum(optionCmb.getSelectionModel().getSelectedItem()).isAllProject());
         });
 
         //set data sources for combo boxes
@@ -75,6 +82,18 @@ public class ImportView implements Initializable {
         projectCmb.setConverter(customStringConverters.getProjectObjectStringConverter());
         projectCmb.setCellFactory(comboFactories.getProjectComboCellFactory());
 
+        browseBtn.setOnAction(actionEvent -> urlPathTxt.setText(getFileLocation(actionEvent)));
 
+    }
+
+    private String getFileLocation(ActionEvent actionEvent){
+        Window window = ((Node)actionEvent.getSource()).getScene().getWindow();
+        FileChooser fileChooser  = new FileChooser();
+        fileChooser.setInitialDirectory(new File(GeneralUtil.getProgramPath()));
+        fileChooser.setTitle("Select Import File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel File","*.xlsx"));
+        File directoryLocation = fileChooser.showOpenDialog(window);
+        if(directoryLocation == null)return "";
+        return directoryLocation.getAbsolutePath();
     }
 }

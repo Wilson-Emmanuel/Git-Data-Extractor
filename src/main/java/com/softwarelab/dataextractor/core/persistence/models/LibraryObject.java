@@ -14,4 +14,7 @@ public class LibraryObject {
     private String name;
     private String category;
     private String provider;
+
+    @Builder.Default
+    private int libraryFrequencyInProject=0;
 }
