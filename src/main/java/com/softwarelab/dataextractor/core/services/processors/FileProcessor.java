@@ -1,10 +1,11 @@
 package com.softwarelab.dataextractor.core.services.processors;
 
 import com.softwarelab.dataextractor.core.exception.CMDProcessException;
-import com.softwarelab.dataextractor.core.persistence.models.dtos.FileModel1;
+import com.softwarelab.dataextractor.core.persistence.models.dtos.FileModel;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -41,28 +42,29 @@ public class FileProcessor{
 
         List<String> lines = cmdProcessor.processCMD(CMD.ALL_GIT_MANAGED_FILES.getCommand(), projectPath);
 
+        //System.out.println(lines);
         return lines.stream().filter(line -> line.endsWith(".java"))
                 .collect(Collectors.toList());
     }
 
-    public FileModel1 extractFileLibraries(String filePath, String projectPath) throws IOException {
-        List<String> libraries = new ArrayList<>();
+    public FileModel extractFileLibraries(String filePath, String projectPath) throws IOException {
 
         List<String> lines = Files.readAllLines(Paths.get(projectPath+"\\"+filePath));
         int indexOf;
-        Map<String,Boolean> libs = new HashMap<>();
+        Set<String> libs = new HashSet<>();
 
-        FileModel1 fileModel1 = FileModel1.builder()
+        FileModel fileModel = FileModel.builder()
                 .nameUrl(filePath)
+                .className(new File(projectPath+"\\"+filePath).getName())
                 .build();
 
         for(String line: lines){
 
-            if(line.contains("class "))
+            if(line.contains("class ") || line.contains("interface "))
                 break;
 
             if(line.contains("package ")){
-                fileModel1.setPackageName(extractPackageName(line));
+                fileModel.setPackageName(extractPackageName(line));
                 continue;
             }
 
@@ -70,11 +72,11 @@ public class FileProcessor{
                line = line.replace("import ","").trim();
                indexOf = line.indexOf(";");
                if(indexOf >=0 )
-                    libs.put(line.substring(0, indexOf),true);
+                    libs.add(line.substring(0, indexOf));
             }
         }
-        fileModel1.setLibraries(libs);
-        return fileModel1;
+        fileModel.setLibraries(libs);
+        return fileModel;
     }
 
     private String extractPackageName(String packageName){

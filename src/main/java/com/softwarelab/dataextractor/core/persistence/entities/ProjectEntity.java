@@ -23,7 +23,7 @@ public class ProjectEntity extends AbstractBaseEntity<Long> {
     @Column
     private String name;
 
-    @Column
+    @Column(unique = true, nullable = false)
     private String localPath;
 
     @Column

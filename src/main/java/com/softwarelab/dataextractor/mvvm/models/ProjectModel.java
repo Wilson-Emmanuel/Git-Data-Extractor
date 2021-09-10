@@ -23,29 +23,21 @@ public class ProjectModel {
         this.projectService = projectService;
         this.eventHub = eventHub;
         projects = projectService.getAllProjects();
-        ProjectObject projectObject = ProjectObject.builder()
-                .id(1L)
-                .localPath("anything")
-                .remoteURL("anything rmote")
-                .name("Project name")
-                .localPath("localpath")
-                .build();
-        projects.add(projectObject);
     }
 
 
     private List<ProjectObject> projects = Collections.emptyList();
 
     public void updateProjects(){
-        //projects = projectService.getAllProjects();
-        ProjectObject projectObject = ProjectObject.builder()
-                .id(2L)
-                .localPath("anything again2")
-                .remoteURL("anything again2")
-                .name("Project name2")
-                .localPath("localpath2")
-                .build();
-        projects.add(projectObject);
+        projects = projectService.getAllProjects();
+//        ProjectObject projectObject = ProjectObject.builder()
+//                .id(2L)
+//                .localPath("anything again2")
+//                .remoteURL("anything again2")
+//                .name("Project name2")
+//                .localPath("localpath2")
+//                .build();
+        //projects.add(projectObject);
         eventHub.publish(EventHub.EVENT_PROJECT_UPDATE);
     }
     public List<ProjectObject> getProjects(){

@@ -25,6 +25,6 @@ public class CommiterEntity extends AbstractBaseEntity<Long>{
     @Column
     private String mappedName;//this is the real contributors name used for analysis
 
-    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     private ProjectEntity project;
 }

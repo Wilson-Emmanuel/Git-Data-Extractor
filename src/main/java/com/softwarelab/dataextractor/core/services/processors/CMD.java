@@ -24,7 +24,7 @@ public enum CMD {
     //ALL_CHANGES_MADE_ON_A_FILE("git log -p --reverse --format=\"gjdea_firstinfo: %an **** %ae **** %H **** %aI\" -- ");//followed by -- and file url OR COMMIT HASH
 
     //The contributors graph (example) shows committers, but not authors if the author is different from the committer. Could it be updated to show both?
-    ALL_CHANGES_MADE_ON_A_FILE("git log -p --reverse --format=\"gjdea_firstinfo: %cn **** %ce **** %H **** %aI\" -- ");//followed by -- and file url OR COMMIT HASH
+    ALL_CHANGES_MADE_ON_A_FILE("git log -p --reverse --format=\"gjdea_firstinfo: %cn **** %ce **** %an **** %ae **** %H **** %cI **** %aI\" -- ");//followed by -- and file url OR COMMIT HASH
 
     private String command;
     private CMD(String command){

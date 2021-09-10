@@ -14,4 +14,5 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity,Long> {
     boolean existsByLocalPath(String localPath);
 
     Optional<ProjectEntity> findByRemoteUrl(String remoteUrl);
+    Optional<ProjectEntity> findByLocalPath(String localPath);
 }

@@ -24,7 +24,7 @@ public class EventHub {
 
         Platform.runLater( () -> {
             List<Subscriber> subscriberList = subscribers.get(event);
-            System.out.println("there are "+subscriberList.size()+" subscribers");
+            //System.out.println("there are "+subscriberList.size()+" subscribers");
             if (subscriberList != null) {
                 subscriberList.forEach(subscriberObject -> subscriberObject.getCb().accept(event));
             }

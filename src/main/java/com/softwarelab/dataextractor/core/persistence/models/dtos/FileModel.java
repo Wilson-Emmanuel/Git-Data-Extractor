@@ -16,7 +16,8 @@ import java.util.Set;
 public class FileModel {
     private Long id;
     private String nameUrl;
+    private String className;
     private String packageName;
     @Builder.Default
-    private Map<String,Boolean> libraries = Collections.emptyMap();
+    private Set<String> libraries = Collections.emptySet();
 }

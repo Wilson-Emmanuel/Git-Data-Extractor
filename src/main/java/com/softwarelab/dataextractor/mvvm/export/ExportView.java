@@ -1,15 +1,21 @@
 package com.softwarelab.dataextractor.mvvm.export;
 
 import com.softwarelab.dataextractor.core.persistence.models.ProjectObject;
+import com.softwarelab.dataextractor.core.utilities.GeneralUtil;
 import com.softwarelab.dataextractor.core.utilities.converters.CustomStringConverters;
 import com.softwarelab.dataextractor.core.utilities.factories.ComboFactories;
 import com.softwarelab.dataextractor.mvvm.models.OptionEnum;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Window;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -47,6 +53,7 @@ public class ExportView implements Initializable {
 
         progressMessage.textProperty().bind(exportViewModel.taskMessageProperty());
         progressBar.progressProperty().bind(exportViewModel.taskProgressProperty());
+
         exportBtn.disableProperty().bind(exportViewModel.taskRunningProperty());
         progressBar.visibleProperty().bind(exportViewModel.taskRunningProperty());
         progressMessage.visibleProperty().bind(exportViewModel.taskRunningProperty());
@@ -55,11 +62,12 @@ public class ExportView implements Initializable {
 
         //Disable project when export option is ALL_PROJECT_UNIQUE_LIBRARIES( which exports all unique libraries in the system)
         optionCmb.valueProperty().addListener((observableValue, s, t1) -> {
-            projectCmb.setDisable(OptionEnum.getOptionEnum(optionCmb.getSelectionModel().getSelectedItem()) == OptionEnum.ALL_PROJECT_UNIQUE_LIBRARIES);
+            projectCmb.setDisable(OptionEnum.getOptionEnum(optionCmb.getSelectionModel().getSelectedItem()).isAllProject());
         });
 
         //set export button action
         exportBtn.setOnAction(actionEvent -> {
+            exportViewModel.setExportDestination(GeneralUtil.getProjectLocation(actionEvent, "Select Export Destination"));
             exportViewModel.startProcess();
         });
 
@@ -71,4 +79,6 @@ public class ExportView implements Initializable {
         projectCmb.setConverter(customStringConverters.getProjectObjectStringConverter());
         projectCmb.setCellFactory(comboFactories.getProjectComboCellFactory());
     }
+
+
 }

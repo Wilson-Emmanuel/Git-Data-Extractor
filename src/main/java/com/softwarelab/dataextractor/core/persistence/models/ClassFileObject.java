@@ -5,12 +5,13 @@ import lombok.Data;
 
 /**
  * Created by Wilson
- * on Sun, 18/04/2021.
+ * on Sun, 15/08/2021.
  */
 @Data
 @Builder
-public class DeveloperModel {
+public class ClassFileObject {
     private Long id;
-    private String name;
-    private String email;
+    private String className;
+    private String fullPath;
+    private ProjectObject project;
 }

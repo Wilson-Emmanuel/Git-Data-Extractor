@@ -2,6 +2,7 @@ package com.softwarelab.dataextractor;
 
 import com.softwarelab.dataextractor.mvvm.export.ExportView;
 import com.softwarelab.dataextractor.mvvm.extract.ExtractView;
+import com.softwarelab.dataextractor.mvvm.extract.ExtractViewModel;
 import com.softwarelab.dataextractor.mvvm.imports.ImportView;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,6 +38,8 @@ public class MainView implements Initializable {
     private ImportView importView;
     @Autowired
     private ExtractView extractView;
+    @Autowired
+    private ExtractViewModel extractViewModel;
 
     @Value("classpath:/export.fxml")
     private Resource exportResource;
@@ -64,5 +67,8 @@ public class MainView implements Initializable {
         extractionTab.setContent(extractParent);
         importTab.setContent(importParent);
         exportTab.setContent(exportParent);
+
+        //importTab.disableProperty().bind(extractViewModel.taskRunningProperty());
+        //exportTab.disableProperty().bind(extractViewModel.taskRunningProperty());
     }
 }
